@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<div id="myCanvas">
+    <svg width='600' height='400' style=''>
+        <rect stroke='black' fill='none'/>
+        <circle fill='blue' r='5'/>
+        <circle fill='red' r='5' />
+      </svg>
+    </div>
+
+</body>
+
+<script>
+
+var canvas = document.getElementById("myCanvas");
+
+rect = canvas.querySelector('rect')
+initial_pt = canvas.querySelector('circle[fill=blue]')
+
+current_pt = canvas.querySelector('circle[fill=red]')
+console.log(initial_pt)
+console.log(current_pt)
+
+function screenToSVGCoords(canvas, e) {
+  // Read the SVG's bounding rectangle...
+  let canvasRect = canvas.getBoundingClientRect();
+  console.log(canvasRect)
+  // ...and transform clientX / clientY to be relative to that rectangle
+  return {
+    x: e.clientX - canvasRect.x,
+    y: e.clientY - canvasRect.y
+  }
+}
+
+
+canvas.addEventListener('mousedown', e => {
+  window.initial_coords = screenToSVGCoords(canvas, e);
+  document.addEventListener('mousemove', mousemoveWithKeys);
+  document.addEventListener('mouseup', mouseupWithKeys);
+
+});
+
+function mousemoveWithKeys(e) {
+  var current_coords = screenToSVGCoords(canvas, e);
+  var is_constrained = e.shiftKey;
+  var is_from_center = e.altKey;
+  update(initial_coords, current_coords, is_constrained, is_from_center)
+}
+
+
+function update(initial_coords, current_coords, is_constrained, is_from_center) {
+    // let description = describe(`updates the rectangle \`rect\``);
+    let current_x = current_coords.x;
+    let current_y = current_coords.y;
+    
+    if (is_constrained) {
+        
+        // compute the distance on the X and Y coordiantes...
+            let deltaX = current_coords.x - initial_coords.x;
+            let deltaY = current_coords.y - initial_coords.y;
+        
+        // ...then find whichever is largest...
+            let delta = Math.max(Math.abs(deltaX), Math.abs(deltaY));
+            
+        // ...which we then apply to both the X and Y coordinates
+        current_x = initial_coords.x + (Math.sign(deltaX) || 1) * delta;
+            current_y = initial_coords.y + (Math.sign(deltaY) || 1) * delta;
+        
+        }
+    
+    let x, y;
+    
+    let width = Math.abs(current_x - initial_coords.x);
+    let height = Math.abs(current_y - initial_coords.y);
+    
+    if (is_from_center) {
+        
+        let reflected_x = 2 * initial_coords.x - current_x;
+        let reflected_y = 2 * initial_coords.y - current_y;
+        
+        x = Math.min(reflected_x, current_x);
+        y = Math.min(reflected_y, current_y);
+        
+        width = 2 * width;
+        height = 2 * height;
+    
+    } else {
+        
+        x = Math.min(initial_coords.x, current_x);
+        y = Math.min(initial_coords.y, current_y);
+    
+    }
+    
+    rect.setAttribute('x', x);
+    rect.setAttribute('y', y);
+    rect.setAttribute('width', width);
+    rect.setAttribute('height', height);
+    initial_pt.setAttribute('cx', initial_coords.x);
+    initial_pt.setAttribute('cy', initial_coords.y);
+    current_pt.setAttribute('cx', current_coords.x);
+    current_pt.setAttribute('cy', current_coords.y);
+    
+    // return description;
+}
+
+function mousedownWithKeys(e) {
+  var initial_coords = screenToSVGCoords(canvas, e);
+  document.addEventListener('mousemove', mousemoveWithKeys);
+  document.addEventListener('mouseup', mouseupWithKeys);
+}
+function mouseupWithKeys(e) {
+  document.removeEventListener('mousemove', mousemoveWithKeys);
+  document.removeEventListener('mouseup', mouseupWithKeys);
+}
+</script>
+</html>
