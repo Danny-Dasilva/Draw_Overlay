@@ -17,36 +17,34 @@ from enum import Enum
 from http.server import BaseHTTPRequestHandler
 from itertools import cycle
 
-def json_parse(data):
-    data = json.dumps(data)
-    data = json.loads(data)
-    return(data)
-    
+
 def write_json(nput):
-    with open('static/data.json') as f:
+    print(nput, "write")
+    with open('streaming/assets/static/data.json') as f:
         
         try:
             data = json.load(f)
+       
             data.update(nput)
+          
         except:
             data = nput
        
-        
-
-    with open('static/data.json', 'w') as f:
+    print(data, "read")
+    with open('streaming/assets/static/data.json', 'w') as f:
         json.dump(data, f)
     f.close()
 
 
 def delete_json(nput):
-    with open('static/data.json') as f:
+    with open('streaming/assets/static/data.json') as f:
         
         
         data = json.load(f)
         print(data, "input", nput)
         del data[nput] 
 
-    with open('static/data.json', 'w') as f:
+    with open('streaming/assets/static/data.json', 'w') as f:
         json.dump(data, f)
     f.close()
 
@@ -55,36 +53,6 @@ from .proto import messages_pb2 as pb2
 logger = logging.getLogger(__name__)
 
 
-
-
-
-def write_json(nput):
-    with open('static/data.json') as f:
-        
-        try:
-            data = json.load(f)
-            data.update(nput)
-        except:
-            data = nput
-       
-        
-
-    with open('static/data.json', 'w') as f:
-        json.dump(data, f)
-    f.close()
-
-
-def delete_json(nput):
-    with open('static/data.json') as f:
-        
-        
-        data = json.load(f)
-        print(data, "input", nput)
-        del data[nput] 
-
-    with open('static/data.json', 'w') as f:
-        json.dump(data, f)
-    f.close()
 
 
 
@@ -732,12 +700,13 @@ class WsProtoClient(ProtoClient):
         if request.command == 'POST':
             if request.path == "/add_profile":
                 data = request.headers['Authority']
-            
-                data = json_parse(data)
+                
+                data = json.loads(data)
+                
                 write_json(data)
             if request.path == "/delete_profile":
                 data = request.headers['Authority']
-                data = json_parse(data)
+                data = json.loads(data)
                 delete_json(data)
 
             return True
