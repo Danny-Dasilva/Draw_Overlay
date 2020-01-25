@@ -12,14 +12,82 @@ import subprocess
 import sys
 import threading
 import time
-
+import json
 from enum import Enum
 from http.server import BaseHTTPRequestHandler
 from itertools import cycle
 
+def json_parse(data):
+    data = json.dumps(data)
+    data = json.loads(data)
+    return(data)
+    
+def write_json(nput):
+    with open('static/data.json') as f:
+        
+        try:
+            data = json.load(f)
+            data.update(nput)
+        except:
+            data = nput
+       
+        
+
+    with open('static/data.json', 'w') as f:
+        json.dump(data, f)
+    f.close()
+
+
+def delete_json(nput):
+    with open('static/data.json') as f:
+        
+        
+        data = json.load(f)
+        print(data, "input", nput)
+        del data[nput] 
+
+    with open('static/data.json', 'w') as f:
+        json.dump(data, f)
+    f.close()
+
 from .proto import messages_pb2 as pb2
 
 logger = logging.getLogger(__name__)
+
+
+
+
+
+def write_json(nput):
+    with open('static/data.json') as f:
+        
+        try:
+            data = json.load(f)
+            data.update(nput)
+        except:
+            data = nput
+       
+        
+
+    with open('static/data.json', 'w') as f:
+        json.dump(data, f)
+    f.close()
+
+
+def delete_json(nput):
+    with open('static/data.json') as f:
+        
+        
+        data = json.load(f)
+        print(data, "input", nput)
+        del data[nput] 
+
+    with open('static/data.json', 'w') as f:
+        json.dump(data, f)
+    f.close()
+
+
+
 
 class NAL:
     CODED_SLICE_NON_IDR = 1  # Coded slice of a non-IDR picture
@@ -652,6 +720,7 @@ class WsProtoClient(ProtoClient):
 
     def _process_web_request(self):
         request = _read_http_request(self._socket)
+        print("ahh", request)
         request = HTTPRequest(request)
         connection = request.headers['Connection']
         upgrade = request.headers['Upgrade']
@@ -660,7 +729,18 @@ class WsProtoClient(ProtoClient):
             self._queue_message(_http_switching_protocols(sec_websocket_key))
             self._logger.info('Upgraded to WebSocket')
             return False
+        if request.command == 'POST':
+            if request.path == "/add_profile":
+                data = request.headers['Authority']
+            
+                data = json_parse(data)
+                write_json(data)
+            if request.path == "/delete_profile":
+                data = request.headers['Authority']
+                data = json_parse(data)
+                delete_json(data)
 
+            return True
         if request.command == 'GET':
             content, content_type = _read_asset(request.path)
             if content is None:

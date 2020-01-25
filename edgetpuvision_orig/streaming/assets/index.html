@@ -162,7 +162,8 @@ function updateDropdown() {
       var option = document.createElement("option");
       option.text = key;
       select.add(option); 
-    });
+    }
+  });
   };
 
 updateDropdown()
@@ -205,24 +206,37 @@ function addProfile() {
 
   width = rect.getAttribute('width');
   height= rect.getAttribute('height');
-  console.log(t, x, y, width, height, rx, ry);
+  console.log(t, x, y, width, height);
   $.ajax({
             type: 'POST',
+            beforeSend: function(request) {
+              request.setRequestHeader("Authority", JSON.stringify({ [t]: {'x' : x, 'y' : y,'width' : width, 'height' : height} }));
+            },
+
             url: "/add_profile",
             contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify({ [t]: {'x' : x, 'y' : y,'width' : width, 'height' : height} }),
+            data: "json: " + JSON.stringify({ [t]: {'x' : x, 'y' : y,'width' : width, 'height' : height} }),
         });
   updateDropdown()
 }
 function deleteProfile() {
   var select = document.getElementById("select");
   console.log(select.value)
-  $.ajax({
-            type: 'POST',
-            url: "/delete_profile",
-            contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify(select.value),
-        });
+ 
+
+
+      $.ajax({
+          type: 'POST',
+          beforeSend: function(request) {
+            request.setRequestHeader("Authority", JSON.stringify(select.value));
+          },
+
+          url: "/delete_profile",
+          contentType: 'application/json;charset=UTF-8',
+          data: "json: " + JSON.stringify(select.value),
+      });
+
+
   updateDropdown()
 
 }

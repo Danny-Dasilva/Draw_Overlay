@@ -7,14 +7,7 @@ app = Flask(__name__)
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
-def read_json(selector):
-    with open('static/data.json') as json_file:
 
-        read = json.load(json_file)
-        data = read[selector]
-    json_file.close()
-    return(data)
-        
 
 def write_json(nput):
     with open('static/data.json') as f:
