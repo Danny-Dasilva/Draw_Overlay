@@ -58,7 +58,7 @@ window.onload = function() {
     }
 
     var player = null;
-    var socket = new WebSocket("ws://" + window.location.host + "/stream");
+    var socket = new WebSocket("ws://" + window.location.host + "/yeetr");
     console.log(window.location.host)
     socket.binaryType = "arraybuffer";
 

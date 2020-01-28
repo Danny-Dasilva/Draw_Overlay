@@ -50,6 +50,13 @@ def stream(socket):
             
             socket.send(buffer)
 
+@sockets.route('/yeetr')
+def yeetr(socket):
+    t = svg(q)
+    for buffer in t:
+        if buffer:
+            
+            socket.send(buffer)
 
 # @sockets.route('/stream')
 # def stream(socket):
