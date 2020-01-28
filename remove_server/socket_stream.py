@@ -69,7 +69,7 @@ def run_server(q):
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--source',
                         help='/dev/videoN:FMT:WxH:N/D or .mp4 file or image file',
-                        default='/dev/video0:YUY2:640x480:30/1')
+                        default='/dev/video1:YUY2:640x480:30/1')
     parser.add_argument('--bitrate', type=int, default=1000000,
                         help='Video streaming bitrate (bit/s)')
    

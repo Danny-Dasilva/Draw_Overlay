@@ -258,6 +258,7 @@ def run(inference_size, render_overlay, *, source, loop, display):
 
 def get_pipeline(source, inference_size, display):
     fmt = parse_format(source)
+    print(fmt)
     if fmt:
         layout = make_layout(inference_size, fmt.size)
         return layout, camera_pipeline(fmt, layout, display)

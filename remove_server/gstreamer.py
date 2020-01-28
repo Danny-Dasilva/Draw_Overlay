@@ -293,9 +293,9 @@ def quit():
 def run_pipeline(pipeline, layout, loop, render_overlay, display, handle_sigint=True, signals=None):
     # Create pipeline
     pipeline = describe(pipeline)
-   # print(pipeline, "ahh")
+    print(pipeline, "ahh")
     #pipeline = 'v4l2src device=/dev/video0 ! tee name=t t. ! queue max-size-buffers=1 leaky=downstream ! video/x-raw,format=YUY2,width=640,height=480,framerate=30/1 ! videoconvert ! x264enc speed-preset=ultrafast tune=zerolatency threads=4 key-int-max=5 bitrate=1000 aud=False ! video/x-h264,profile=baseline ! h264parse ! video/x-h264,stream-format=byte-stream,alignment=nal ! appsink name=CV emit-signals=True max-buffers=1 drop=False sync=False'
-    pipeline = "v4l2src device=/dev/video0 ! video/x-raw,format=YUY2,width=640,height=480,framerate=30/1 ! tee name=t t. ! queue max-size-buffers=1 leaky=downstream ! videoconvert ! x264enc speed-preset=ultrafast tune=zerolatency threads=4 key-int-max=5 bitrate=1000 aud=False ! video/x-h264,profile=baseline ! h264parse ! video/x-h264,stream-format=byte-stream,alignment=nal ! appsink name=h264sink emit-signals=True max-buffers=1 drop=False sync=False"
+    pipeline = "v4l2src device=/dev/video1 ! video/x-raw,format=YUY2,width=640,height=480,framerate=30/1 ! tee name=t t. ! queue max-size-buffers=1 leaky=downstream ! videoconvert ! x264enc speed-preset=ultrafast tune=zerolatency threads=4 key-int-max=5 bitrate=1000 aud=False ! video/x-h264,profile=baseline ! h264parse ! video/x-h264,stream-format=byte-stream,alignment=nal ! appsink name=h264sink emit-signals=True max-buffers=1 drop=False sync=False"
     pipeline = Gst.parse_launch(pipeline)
 
     # Set up a pipeline bus watch to catch errors.
