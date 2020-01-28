@@ -410,6 +410,7 @@ class Client:
         self._state = ClientState.DISABLED
         self._logger = ClientLogger(logger, {'name': name})
         self._socket = sock
+        print(sock, "ajhhjhjjj")
         self._commands = command_queue
         self._tx_q = DroppingQueue(15)
         self._rx_thread = threading.Thread(target=self._rx_run)

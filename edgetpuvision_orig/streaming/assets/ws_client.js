@@ -142,8 +142,11 @@ function createPlayer(width, height, streamControl) {
 
 
 
+
+
+
+
 function createPlayer1(width, height, streamControl) {
-  console.log("in create plater")
   var player = new Player({
     useWorker: true,
     workerFile: "broadway/Decoder.js",
@@ -164,7 +167,7 @@ function createPlayer1(width, height, streamControl) {
     frameCount++;
   };
 
-  var container = document.getElementById("container1");
+  var container = document.getElementById("container");
   var cropDiv = document.createElement("div");
   cropDiv.style.overflow = "hidden";
   cropDiv.style.position = "absolute";
@@ -176,8 +179,8 @@ function createPlayer1(width, height, streamControl) {
   container.appendChild(cropDiv);
 
 
-  var canvas = document.createElement("canvas1");
-  canvas.id = "overlay"
+  var canvas = document.createElement("canvas");
+  canvas.id = "overlay1"
   canvas.style.position = "absolute";
   canvas.width = width;
   canvas.height = height;
@@ -187,113 +190,123 @@ function createPlayer1(width, height, streamControl) {
 }
 
 
-
-
 window.onload = function() {
   protobuf.load("messages.proto", function(err, root) {
     if (err)
       throw err;
 
-    var ClientBound = root.lookupType("ClientBound");
-    var ServerBound = root.lookupType("ServerBound")
+    // var ClientBound = root.lookupType("ClientBound");
+    // var ServerBound = root.lookupType("ServerBound")
 
-    function streamControl(enabled) {
-        serverBound = ServerBound.create({streamControl: {enabled:enabled}});
-        socket.send(ServerBound.encode(serverBound).finish());
+    // function streamControl(enabled) {
+    //     serverBound = ServerBound.create({streamControl: {enabled:enabled}});
+    //     socket.send(ServerBound.encode(serverBound).finish());
+    // }
+
+    // var player = null;
+    // var socket = new WebSocket("ws://" + window.location.host + "/stream");
+    
+    // socket.binaryType = "arraybuffer";
+
+    // socket.onopen = function(event) {
+    //   console.log("Socket connected.");
+    //   streamControl(true);
+    // };
+
+    // socket.onclose = function(event) {
+    //   console.log("Socket closed.");
+    // };
+
+    // socket.onmessage = function(event) {
+      
+    //   var clientBound = ClientBound.decode(new Uint8Array(event.data))
+    //   switch (clientBound.message) {
+    //     case 'start':
+    //       console.log('Starting...')
+    //       start = clientBound.start;
+    //       if (player == null) {
+    //         console.log('Starting...')
+    //         player = createPlayer(start.width, start.height, streamControl);
+    //         console.log("Started: " + start.width + "x" + start.height);
+    //       }
+    //       break;
+    //     case 'video':
+    //       player.decode(clientBound.video.data);
+    //       break;
+    //     case 'overlay':
+    //       var canvas = document.getElementById("overlay");
+    //       var ctx = canvas.getContext("2d");
+    //       var img = new Image();
+    //       img.onload = function() {
+    //         ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    //       }
+    //       img.src = "data:image/svg+xml;charset=utf-8," + clientBound.overlay.svg;
+    //       break;
+    //     case 'stop':
+    //       console.log("Stopped.");
+    //       break;
+    //   }
+    // };
+
+
+
+    var ClientBound1 = root.lookupType("ClientBound");
+    var ServerBound1 = root.lookupType("ServerBound")
+
+    function streamControl1(enabled) {
+        serverBound1 = ServerBound1.create({streamControl1: {enabled:enabled}});
+        socket1.send(ServerBound1.encode(serverBound1).finish());
     }
 
-    var player = null;
-    var socket = new WebSocket("ws://" + window.location.host + "/stream");
-    
-    socket.binaryType = "arraybuffer";
-
-    socket.onopen = function(event) {
-      console.log("Socket connected.");
-      streamControl(true);
-    };
-
-    socket.onclose = function(event) {
-      console.log("Socket closed.");
-    };
-
-    socket.onmessage = function(event) {
-      
-      var clientBound = ClientBound.decode(new Uint8Array(event.data))
-      switch (clientBound.message) {
-        case 'start':
-          console.log('Starting...')
-          start = clientBound.start;
-          if (player == null) {
-            console.log('Starting...')
-            player = createPlayer(start.width, start.height, streamControl);
-            console.log("Started: " + start.width + "x" + start.height);
-          }
-          break;
-        case 'video':
-          player.decode(clientBound.video.data);
-          break;
-        case 'overlay':
-          var canvas = document.getElementById("overlay");
-          var ctx = canvas.getContext("2d");
-          var img = new Image();
-          img.onload = function() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          }
-          img.src = "data:image/svg+xml;charset=utf-8," + clientBound.overlay.svg;
-          break;
-        case 'stop':
-          console.log("Stopped.");
-          break;
-      }
-    };
-
-
-
+    var player1 = null;
     var socket1 = new WebSocket("ws://" + window.location.host + "/stream");
     
     socket1.binaryType = "arraybuffer";
 
     socket1.onopen = function(event) {
-      console.log("Socket1 conn");
-      streamControl(true);
+      console.log("Socket connected.");
+      streamControl1(true);
     };
 
     socket1.onclose = function(event) {
-      console.log("Socket1 closed.");
+      console.log("Socket closed.");
     };
 
     socket1.onmessage = function(event) {
-      console.log("on messagfew")
-      var clientBound = ClientBound.decode(new Uint8Array(event.data))
-      switch (clientBound.message) {
+      
+      var clientBound1 = ClientBound1.decode(new Uint8Array(event.data))
+      switch (clientBound1.message) {
         case 'start':
-          console.log('Starting...')
-          start = clientBound.start;
-          if (player == null) {
-            console.log('Starting...')
-            player = createPlayer1(start.width, start.height, streamControl);
-            console.log("Started: " + start.width + "x" + start.height);
+          console.log('Starting1...')
+          start = clientBound1.start;
+          if (player1 == null) {
+            console.log('Starting1...')
+            player1 = createPlayer1(start.width, start.height, streamControl);
+            console.log("Started1: " + start.width + "x" + start.height);
           }
           break;
         case 'video':
-          player.decode(clientBound.video.data);
+          player1.decode(clientBound1.video.data);
           break;
         case 'overlay':
-          var canvas = document.getElementById("overlay1");
-          var ctx = canvas.getContext("2d");
-          var img = new Image();
-          img.onload = function() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          var canvas1 = document.getElementById("overlay1");
+          var ctx1 = canvas1.getContext("2d");
+          var img1 = new Image();
+          img1.onload = function() {
+            ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+            ctx1.drawImage(img, 0, 0, canvas1.width, canvas1.height);
           }
-          img.src = "data:image/svg+xml;charset=utf-8," + clientBound.overlay.svg;
+          img1.src = "data:image/svg+xml;charset=utf-8," + clientBound1.overlay.svg;
           break;
         case 'stop':
           console.log("Stopped.");
           break;
       }
     };
+    
+
+
 
 
 
