@@ -41,6 +41,7 @@ class Camera:
             obj.write(data)
 
         def render_overlay(tensor, layout, command):
+            print(len(tensor))
             pass
 
         signals = {

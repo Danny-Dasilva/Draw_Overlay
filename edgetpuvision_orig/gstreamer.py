@@ -297,7 +297,7 @@ def quit():
 def run_pipeline(pipeline, layout, loop, render_overlay, display, handle_sigint=True, signals=None):
     # Create pipeline
     pipeline = describe(pipeline)
-    print(pipeline)
+    print(pipeline, "pipeline")
     pipeline = Gst.parse_launch(pipeline)
 
     # Set up a pipeline bus watch to catch errors.
