@@ -232,14 +232,14 @@ window.onload = function() {
         case 'start':
           console.log('Starting...')
           start = clientBound.start;
-          if (player == null) {
+          if (player1 == null) {
             console.log('Starting...')
-            player = createPlayer(start.width, start.height, streamControl);
+            player1 = createPlayer1(start.width, start.height, sstreamControl);
             console.log("Started: " + start.width + "x" + start.height);
           }
           break;
         case 'video':
-          player.decode(clientBound.video.data);
+          player1.decode(clientBound.video.data);
           break;
         case 'overlay':
           var canvas = document.getElementById("overlay");
@@ -256,7 +256,7 @@ window.onload = function() {
           break;
       }
     };
-    };
+ 
 
 
 
