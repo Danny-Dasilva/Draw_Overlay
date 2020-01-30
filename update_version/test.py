@@ -3,7 +3,7 @@ import os
 import subprocess
 import re
 import textwrap
-class Cell(object):
+class Cell():
     """
     Presents a Python interface to the output of iwlist.
     """
@@ -20,12 +20,12 @@ class Cell(object):
         self.quality = None
         self.signal = None
         self.noise = None
+        self.cells = []
 
     def __repr__(self):
         return '{ssid}'.format(**vars(self))
-
-    @classmethod
-    def all(cls, interface):
+        
+    def all(self, interface):
         """
         Returns a list of all cells extracted from the output of iwlist.
         """
@@ -37,9 +37,12 @@ class Cell(object):
         else:
             iwlist_scan = iwlist_scan.decode('utf-8')
         cells = map(Cell.from_string, cells_re.split(iwlist_scan)[1:])
-
+        
+        # listToStr = ' '.join([str(elem) for elem in data]) 
+        # print(listToStr)
         return cells
-
+    # def __len__(self):
+    #     return len(self.cells)
     @classmethod
     def from_string(cls, cell_string):
         """
@@ -167,14 +170,18 @@ def normalize(cell_block):
 
 def Search():
     wifilist = []
-
-    cells = Cell.all('wlan0')
+    lell = Cell()
+    cells = lell.all('wlan0')
+    print(cells)
+   
+    cells = [str(elem) for elem in cells]
+    #
+    gen = (x for x in cells if x not in wifilist)
   
-    gen = (str(x) for x in cells if x not in wifilist)
-
     for x in gen:
-        wifilist.append(x)
-
+        if len(x) != 0:
+            wifilist.append(x)
+        
     return wifilist
 
 if __name__ == '__main__':
