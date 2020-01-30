@@ -128,7 +128,6 @@ def normalize(cell_block):
 
         elif line.startswith('Bit Rates'):
             values = split_on_colon(line)[1].split('; ')
-
             # consume next line of bit rates, because they are split on
             # different lines, sometimes...
             if lines:
@@ -168,27 +167,44 @@ def normalize(cell_block):
 
     return cell
 
-def Search():
+def search():
     wifilist = []
     lell = Cell()
     cells = lell.all('wlan0')
-    print(cells)
-   
     cells = [str(elem) for elem in cells]
-    #
     gen = (x for x in cells if x not in wifilist)
-  
     for x in gen:
         if len(x) != 0:
-            wifilist.append(x)
-        
+            wifilist.append(x)  
     return wifilist
 
+def read_network_list():
+    pass
+def save_network_list():
+    pass
+def read_network():
+    #nmcli d
+    pass
+def ask_password():
+    #socket promt for password
+    pass
+def connect(network):
+    if network in network_list: # and not connected
+        try:
+            os.system(f"nmcli d up {network}")
+        except:
+            print("err")
+    else:
+        try:
+            password = ask_password()
+            os.system(f"nmcli ddevice wifi connect {network} password {password}")
+        except:
+            print("err")
 if __name__ == '__main__':
-    print( Search())
+    print( search())
     
    # os.system('nmcli ddevice wifi connect my_wifi password <password>')
-  # "nmcli d"
+
   #if in list nmcli connection
 
   # connect to previous:
