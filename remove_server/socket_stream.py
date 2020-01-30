@@ -42,16 +42,16 @@ def byte():
         return Response(svg(q), content_type='text/event-stream')
 
 
-@sockets.route('/stream')
-def stream(socket):
-    t = svg(q)
-    for buffer in t:
-        if buffer:
+# @sockets.route('/stream')
+# def stream(socket):
+#     t = svg(q)
+#     for buffer in t:
+#         if buffer:
             
-            socket.send(buffer)
+#             socket.send(buffer)
 
-@sockets.route('/yeetr')
-def yeetr(socket):
+@sockets.route('/yeet')
+def yeet(socket):
     t = svg(q)
     for buffer in t:
         if buffer:
