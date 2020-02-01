@@ -43,131 +43,50 @@ def OverlayMessage(svg):
     return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
                            overlay=pb2.Overlay(svg=svg))
 
-def _parse_server_message(data):
-    message = pb2.ServerBound()
-    message.ParseFromString(data)
-    return message
-
-class DroppingQueue:
-
-    def __init__(self, maxsize):
-        if maxsize <= 0:
-            raise ValueError('Maxsize must be positive.')
-        self.maxsize = maxsize
-        self._items = []
-        self._cond = threading.Condition(threading.Lock())
-
-    def put(self, item, replace_last=False):
-        with self._cond:
-            was_empty = len(self._items) == 0
-            if len(self._items) < self.maxsize:
-                self._items.append(item)
-                if was_empty:
-                    self._cond.notify()
-                return False  # Not dropped.
-
-            if replace_last:
-                self._items[len(self._items) - 1] = item
-                return False  # Not dropped.
-
-            return True  # Dropped.
-
-    def get(self):
-        with self._cond:
-            while not self._items:
-                self._cond.wait()
-            return self._items.pop(0)
-
-
-class AtomicSet:
-
-    def __init__(self):
-        self._lock = threading.Lock()
-        self._set = set()
-
-    def add(self, value):
-        with self._lock:
-            self._set.add(value)
-            return value
-
-    def __len__(self):
-        with self._lock:
-            return len(self._set)
-
-    def __iter__(self):
-        with self._lock:
-            return iter(self._set.copy())
 
 
 class StreamingServer:
-
     def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
-
-    def __init__(self, camera, q, bitrate=1000000,):
+        pass
+    def __exit__(self):
+        pass
+    def __init__(self, camera, q, qu, bitrate=1000000,):
         self._bitrate = bitrate
         self._camera = camera
         self.q = q
-        self._clients = AtomicSet()
-        self._enabled_clients = AtomicSet()
-        self._done = threading.Event()
+        self.qu = qu
         self._commands = queue.Queue()
-        self._thread = threading.Thread(target=self._run)
-        self._thread.start()
+        self.client = Clientt(self._commands, self._camera.resolution, self.q, self.qu)
         self._start_recording()
 
-    def close(self):
-        self._done.set()
-        self._thread.join()
 
   
 
     def _start_recording(self):
         self._camera.start_recording(self, format='h264', profile='baseline',
             inline_headers=True, bitrate=self._bitrate, intra_period=0)
+        self._camera.start_recording1(self, format='h264', profile='baseline',
+            inline_headers=True, bitrate=self._bitrate, intra_period=0)
 
 
-
-    def _process_command(self, client, command):
-        if command is ClientCommand.ENABLE:
-            self._enabled_clients.add(client)
-        
-        elif command == ClientCommand.STOP:
-       
-            client.stop()
-
-
-    def _run(self):
-        try:               
-
-            while not self._done.is_set():
-                # Process available client commands.
-                try:
-                    while True:
-                        client, command = self._commands.get_nowait()
-                        self._process_command(client, command)
-                except queue.Empty:
-                    pass  # Done processing commands.
-
-                sleep(.02) # supposed to be 200 ms
-        finally:
-
-
-            for client in self._clients:
-                client.stop()
 
     def write(self, data):
         """Called by camera thread for each compressed frame."""
         assert data[0:4] == b'\x00\x00\x00\x01'
         frame_type = data[4] & 0b00011111
         if frame_type in ALLOWED_NALS:
-            client = Clientt(self._commands, self._camera.resolution, self.q)
-            client.start()
-
-            states = client.send_video(frame_type, data)
+            
+            states = self.client.send_video(frame_type, data)
+    def write1(self, data):
+        print(len(data))
+        
+        """Called by camera thread for each compressed frame."""
+        assert data[0:4] == b'\x00\x00\x00\x01'
+        frame_type = data[4] & 0b00011111
+        if frame_type in ALLOWED_NALS:
+            
+            pass
+            states = self.client.send_video1(frame_type, data)
 
     
 
@@ -183,16 +102,18 @@ class ClientCommand(Enum):
     DISABLE = 3
 
 class Clientt:
-    def __init__(self, command_queue, resolution, q):
-        self._lock = threading.Lock()  # Protects _state.
-        self._state = ClientState.DISABLED
+    def __init__(self, command_queue, resolution, q, qu):
+        self._lock = threading.Lock()
         self._commands = command_queue
-        self._tx_q = DroppingQueue(15)
         self.q = q
-        self._rx_thread = threading.Thread(target=self._rx_run, args=(False,))
-        self._tx_thread = threading.Thread(target=self._tx_run)
-        self._queue_message(StartMessage(resolution))
+        self.qu = qu
         self._resolution = resolution
+        message = StartMessage([640, 480])
+        packet = self.WsPacket()
+        packet.append(message.SerializeToString())
+        buf = packet.serialize()
+        self.q.put(buf)
+        self.qu.put(buf)
     class WsPacket:
         def __init__(self):
             self.fin = True
@@ -231,88 +152,20 @@ class Clientt:
                 buf.extend(self.payload)
             return bytes(buf)
 
-
-    def start(self):
-        self._rx_thread.start()
-        self._tx_thread.start()
-
-    def stop(self):
-        self._tx_q.put(None)
-        self._tx_thread.join()
-        self._rx_thread.join()
-
-    def _queue_video(self, data):
-        
-        return self._queue_message(VideoMessage(data))
-    def _queue_video1(self, data):
-        
+    def send_video(self, frame_type, data):
+        message = VideoMessage(data)
+        packet = self.WsPacket()
+        packet.append(message.SerializeToString())
+        buf = packet.serialize()
+        self.q.put(buf)
+        return None
+    def send_video1(self, frame_type, data):
         message = VideoMessage(data)
         packet = self.WsPacket()
         packet.append(message.SerializeToString())
         buf = packet.serialize()
         print(len(buf), " len")
-        self.q.put(buf)
+        self.qu.put(buf)
+        return None
 
-        return self._queue_message(VideoMessage(data))
-
-    
-    
-
-    def send_video(self, frame_type, data):
-        """Only called by camera thread."""
-        dropped = self._queue_video(data)
-        return self._state
-    
-    def send_video1(self, frame_type, data):
-        """Only called by camera thread."""
-        dropped = self._queue_video1(data)
-        return self._state
-
-
-    def _send_command(self, command):
-        self._commands.put((self, command))
-
-    def _queue_message(self, message, replace_last=False):
-       
-        dropped = self._tx_q.put(message, replace_last)
-        
-        return dropped
-
-    def _tx_run(self):
-        try:
-            while True:
-                message = self._tx_q.get()
-                if message is None:
-                    break
-                #self._send_message(message)
-                packet = self.WsPacket()
-                packet.append(message.SerializeToString())
-                buf = packet.serialize()
-                print(len(buf), " len")
-                self.q.put(buf)
-
-          
-        except Exception as e:
-            print(e)
-
-        # Tx thread stops the client in any situation.
-        self._send_command(ClientCommand.STOP)
-            
-
-    def _rx_run(self, done):
-        
-        if done == False:
-            done = True
-            self._handle_stream_control()
-
-    def _handle_stream_control(self):
-        enabled = True
-        
-        with self._lock:
-            
-         
-            self._state = ClientState.ENABLED_NEEDS_SPS
-            
-            self._queue_message(StartMessage(self._resolution))
-            self._send_command(ClientCommand.ENABLE)
-
+  

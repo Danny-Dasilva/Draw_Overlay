@@ -14,20 +14,19 @@
 
 import os
 import threading
-
 import gstreamer
-import pipelines
 from time import sleep
 from TPUCameraManager.TPUCameraManager import CameraManager, GStreamerPipelines
 
 from gst import *
-# camMan = CameraManager() #Creates new camera manager object
-# USBCam = camMan.newCam(1) #Creates new RGB CSI-camera
-# CSICam = camMan.newCam(0)
-# CV = USBCam.addPipeline(GStreamerPipelines.H264,(640,480),30,"CV") #Creates an RGB stream at 30 fps and 640x480 for openCV
-# AI = CSICam.addPipeline(GStreamerPipelines.H264,(640,480),30,"C2")
-# CSICam.startPipeline() #Start gstreamer Streams
-# USBCam.startPipeline()
+camMan = CameraManager() #Creates new camera manager object
+USBCam = camMan.newCam(1) #Creates new RGB CSI-camera
+CSICam = camMan.newCam(0)
+CV = USBCam.addPipeline(GStreamerPipelines.H264,(640,480),30,"CV") #Creates an RGB stream at 30 fps and 640x480 for openCV
+AI = CSICam.addPipeline(GStreamerPipelines.H264,(640,480),30,"h264sink")
+
+CSICam.startPipeline() #Start gstreamer Streams
+USBCam.startPipeline()
 
 
 
@@ -48,32 +47,23 @@ class Camera:
         pass
 
     def start_recording(self, obj, format, profile, inline_headers, bitrate, intra_period):
-        global AI
+        # global AI 
         def on_buffer(data, _):
-            
             obj.write(data)
 
-        def render_overlay(tensor, layout, command):
-            #print(len(tensor))
-            pass
-        # while True:
-        #     sleep(0.03)
-        #     if(AI):
-        #         img = bytes(AI)
-        #         print(len(img))
-        #         obj.write(img)
-        signals = {
-          'h264sink': {'new-sample': gstreamer.new_sample_callback(on_buffer)},
-        }
-        pipeline = self.make_pipeline(format, profile, inline_headers, bitrate, intra_period)
-        
+     
+        objFunc = obj.write
+        AI.addListener(objFunc)
 
-        self._thread = threading.Thread(target=gstreamer.run_pipeline,
-                                        args=(pipeline, self._layout, self._loop,
-                                              render_overlay, gstreamer.Display.NONE,
-                                              False, signals))
-        self._thread.start()
+    def start_recording1(self, obj, format, profile, inline_headers, bitrate, intra_period):
+        # global AI
+        def on_buffer(data, _):
+            print(data, "ahh")
+            #obj.write1(data)
 
+   
+        objFunc = obj.write1
+        CV.addListener(objFunc)
   
 
 

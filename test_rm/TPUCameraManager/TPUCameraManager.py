@@ -89,12 +89,18 @@ class StreamValue():
     
     def newData(self,data):
         self.data = data
+        #self.listeners is a list of classes
+        #listener is a class
+        #calling function in listener
         for listener in self.listeners:
-           listener.write(self.data)
+           listener(self.data)
+        #self.listeners a list of functions
+        #call listener(self.data)
         self.updatedData = True
 
-    def addListener(self,obj):
-       self.listeners.append(obj)
+    def addListener(self,func):
+       self.listeners.append(func)
+
 
 class GStreamerPipelines(enum.Enum):
     SRC = "v4l2src device=/dev/video{0} ! tee name=t"

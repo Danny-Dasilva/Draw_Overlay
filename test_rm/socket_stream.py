@@ -17,6 +17,7 @@ app = Flask(__name__)
 sockets = Sockets(app)
 
 q = queue.Queue(maxsize=150)
+qu = queue.Queue(maxsize=150)
 def svg(q):
     while True:  
         c = q.get()
@@ -25,10 +26,6 @@ def svg(q):
 def init():
     return render_template('index.html')
 
-def VideoMessage(data):
-    return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
-                           video=pb2.Video(data=data))
-
 @sockets.route('/stream')
 def yeet(socket):
     t = svg(q)
@@ -36,6 +33,16 @@ def yeet(socket):
         if buffer:
             
             socket.send(buffer)
+
+
+@sockets.route('/stream1')
+def stream1(socket):
+    t = svg(qu)
+    for buffer in t:
+        if buffer:
+            
+            socket.send(buffer)
+
 
 def run_server(q):
     logging.basicConfig(level=logging.INFO)
@@ -53,9 +60,8 @@ def run_server(q):
 
   
     camera = make_camera(args.source)
-  
 
-    with StreamingServer(camera, q, args.bitrate) as server:
+    with StreamingServer(camera, q, qu, args.bitrate) as server:
         
         signal.pause()
 
@@ -69,7 +75,7 @@ def main():
     t1.deamon = True
     http_server = WSGIServer(('',5000), app, handler_class=WebSocketHandler)
     http_server.serve_forever()
-
+   
     #app.run(host="0.0.0.0", debug=False)
     
     
