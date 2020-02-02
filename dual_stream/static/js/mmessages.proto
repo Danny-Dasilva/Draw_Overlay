@@ -15,7 +15,7 @@ message ClientBound {
     Start start = 1;
     Stop stop = 2;
     Video video = 3;
-    Overlay overlay = 4;
+    USBVID usbvid = 4;
   }
   uint64 timestamp_us = 10;
 }
@@ -32,6 +32,6 @@ message Video {
   bytes data = 1;
 }
 
-message Overlay {
-  string svg = 1;
+message USBVID {
+  bytes data = 1;
 }

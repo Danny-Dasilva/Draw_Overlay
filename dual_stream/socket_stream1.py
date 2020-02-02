@@ -25,7 +25,7 @@ def svg(q):
 @app.route('/')
 def init():
     return render_template('index.html')
-
+    
 @sockets.route('/stream')
 def yeet(socket):
     t = svg(q)

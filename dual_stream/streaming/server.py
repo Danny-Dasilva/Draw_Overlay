@@ -9,7 +9,7 @@ from time import sleep
 from itertools import cycle
 from enum import Enum
 
-from .proto import messages_pb2 as pb2
+from .protobuf import messages_pb2 as pb2
 
 
 class NAL:
@@ -39,9 +39,9 @@ def VideoMessage(data):
     return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
                            video=pb2.Video(data=data))
 
-def OverlayMessage(svg):
+def OverlayMessage(data):
     return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
-                           overlay=pb2.Overlay(svg=svg))
+                           usbvid=pb2.USBVID(data=data))
 
 
 
@@ -78,15 +78,14 @@ class StreamingServer:
             
             states = self.client.send_video(frame_type, data)
     def write1(self, data):
-        print(len(data))
         
         """Called by camera thread for each compressed frame."""
         assert data[0:4] == b'\x00\x00\x00\x01'
         frame_type = data[4] & 0b00011111
         if frame_type in ALLOWED_NALS:
             
-            pass
-            states = self.client.send_video1(frame_type, data)
+            frame_type = 333
+            states = self.client.send_video(frame_type, data)
 
     
 
@@ -153,19 +152,25 @@ class Clientt:
             return bytes(buf)
 
     def send_video(self, frame_type, data):
-        message = VideoMessage(data)
+        if frame_type == 333:
+            message = OverlayMessage(data)
+            
+        else:
+            message = VideoMessage(data)
+       # print(message)
         packet = self.WsPacket()
         packet.append(message.SerializeToString())
         buf = packet.serialize()
         self.q.put(buf)
         return None
-    def send_video1(self, frame_type, data):
-        message = VideoMessage(data)
-        packet = self.WsPacket()
-        packet.append(message.SerializeToString())
-        buf = packet.serialize()
-        print(len(buf), " len")
-        self.qu.put(buf)
-        return None
+    # def send_video1(self, frame_type, data):
+    #     message = VideoMessage1(data)
+    #     packet = self.WsPacket()
+    #     packet.append(message.SerializeToString())
+    #     buf = packet.serialize()
+    #     print(buf)
+    #     # self.q.put(buf)
+       
+    #     return None
 
   

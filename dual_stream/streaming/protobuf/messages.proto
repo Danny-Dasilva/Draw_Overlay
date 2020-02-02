@@ -33,5 +33,5 @@ message Video {
 }
 
 message Overlay {
-  string svg = 1;
+  bytes data = 1;
 }
