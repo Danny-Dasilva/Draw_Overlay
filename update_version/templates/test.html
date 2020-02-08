@@ -9,16 +9,9 @@
   </head>
   <body>
   <section class="section">
-    <div class="container">
-      <h1 class="title">
-        Hello World
-      </h1>
-      
-
-
-      <div class="dropdown is-active">
+    <div class="dropdown is-active" id="myDropdown">
         <div class="dropdown-trigger">
-          <button class="button" aria-haspopup="true" aria-controls="dropdown-menu2">
+          <button class="button" onclick=myFunction() aria-controls="dropdown-menu2">
             <span>Content</span>
             <span class="icon is-small">
               <i class="fas fa-angle-down" aria-hidden="true"></i>
@@ -41,10 +34,33 @@
           </div>
         </div>
       </div>
-    </div>
   </section>
 
 
   </body>
 
+
+
+  <script>
+      function myFunction() {
+   
+  var element = document.getElementById("myDropdown");
+  var contains = element.classList.contains("is-active")
+
+  switch(contains) {
+  case true:
+    element.classList.remove("is-active");
+    break;
+  case false:
+    element.classList.add("is-active");
+    break;
+  default:
+    // code block
+    } 
+
+}
+
+
+
+  </script>
   </html>
