@@ -44,7 +44,7 @@
             </div>
             <div class="field">
               
-              <button onclick=showInput()  aria-label="close" class="button">Cancel</button>
+              <button onclick=closeModal()  aria-label="close" class="button">Cancel</button>
            
               <button onclick=showInput() class="button is-success"> Submit</button>
 
@@ -78,21 +78,20 @@ var connections = [
 for (var i = 0; i < connections.length; i += 1) {
     console.log(connections[i].SSID)
     const div = document.createElement('a');
+    div.className = 'dropdown-item';
 
     
     switch (connections[i].SECURITY) {
         case 'WPA2':
-        div.className = 'dropdown-item';
+            div.id = 'open-modal';
 
-        div.id = 'open-modal';
-
-        div.innerHTML = `${ connections[i].SSID} <i class="fas fa-lock is-pulled-right"> </i> `;
-        document.getElementById('dropdown-content').appendChild(div);
+            div.innerHTML = `${ connections[i].SSID} <i class="fas fa-lock is-pulled-right"> </i> `;
+            document.getElementById('dropdown-content').appendChild(div);
         break;
         default:
-        div.className = 'dropdown-item';
-        div.innerHTML = `${ connections[i].SSID} `;
-        document.getElementById('dropdown-content').appendChild(div);
+            div.id = 'no-modal';
+            div.innerHTML = `${ connections[i].SSID} `;
+            document.getElementById('dropdown-content').appendChild(div);
 
 
     }
@@ -132,13 +131,25 @@ function showInput() {
         console.log(t)
     }
 
+const noPswd = document.querySelectorAll('a#no-modal')
+for (let i = 0; i < noPswd.length; i++) {
+    noPswd[i].addEventListener('click', function(event) {
+        var str  = this.innerHTML
+        //send socket here
+        console.log(str)
+    })
+ }
 
-const cbox = document.querySelectorAll('a#open-modal')
 
- for (let i = 0; i < cbox.length; i++) {
-    cbox[i].addEventListener('click', function(event) {
+ //add in case and use same id later
+
+const pswd = document.querySelectorAll('a#open-modal')
+
+ for (let i = 0; i < pswd.length; i++) {
+    pswd[i].addEventListener('click', function(event) {
         var str  = this.innerHTML
         var res = str.split("<svg");
+        //send socket here
         console.log(res[0])
         var modal = document.querySelector('.modal');  // assuming you have only 1
         var html = document.querySelector('html');
@@ -152,20 +163,8 @@ const cbox = document.querySelectorAll('a#open-modal')
     });
  })
  }
-// document.querySelectorAll('a#open-modal').addEventListener('click', function(event) {
-//   event.preventDefault();
-//   var modal = document.querySelectorAll('.modal');  // assuming you have only 1
-//   var html = document.querySelector('html');
-//   modal.classList.add('is-active');
-//   html.classList.add('is-clipped');
-//   console.log(modal)
-//   modal.querySelector('.modal-background').addEventListener('click', function(e) {
-//     e.preventDefault();
-//     modal.classList.remove('is-active');
-//     html.classList.remove('is-clipped');
-//   });
-// });
-
+// send socket with name to check in list on name click, if value in previous network list just connect
+// case for password takew password do nmcli connect
 
 
 
