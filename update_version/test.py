@@ -171,6 +171,7 @@ def search():
     wifilist = []
     lell = Cell()
     cells = lell.all('wlan0')
+    print(cells)
     cells = [str(elem) for elem in cells]
     gen = (x for x in cells if x not in wifilist)
     for x in gen:
