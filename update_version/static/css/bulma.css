@@ -6331,6 +6331,16 @@ print {
     position: relative
 }
 
+.dropdown-item-locked {
+    color: #4a4a4a;
+    display: block;
+    font-size: .875rem;
+    line-height: 1.5;
+    padding: .375rem 1rem;
+    position: relative
+}
+
+
 a.dropdown-item,
 button.dropdown-item {
     text-align: left;
@@ -6338,11 +6348,27 @@ button.dropdown-item {
     width: 100%
 }
 
+a.dropdown-item-locked,
+button.dropdown-item-locked {
+    text-align: left;
+    white-space: nowrap;
+    width: 100%
+}
+
+
 a.dropdown-item:hover,
 button.dropdown-item:hover {
     background-color: #f5f5f5;
     color: #0a0a0a
 }
+
+
+a.dropdown-item-locked:hover,
+button.dropdown-item-locked:hover {
+    background-color: #f5f5f5;
+    color: #0a0a0a
+}
+
 
 a.dropdown-item.is-active,
 button.dropdown-item.is-active {
@@ -7312,7 +7338,7 @@ print {
     .navbar.is-link .navbar-end>.navbar-item,
     .navbar.is-link .navbar-start .navbar-link,
     .navbar.is-link .navbar-start>.navbar-item {
-        color: #fff
+        color: #fffah
     }
     .navbar.is-link .navbar-end .navbar-link.is-active,
     .navbar.is-link .navbar-end .navbar-link:focus,
@@ -11579,4 +11605,10 @@ print {
 .footer {
     background-color: #fafafa;
     padding: 3rem 1.5rem 6rem
+}
+
+.svg {
+    position: relative !important;
+    z-index: 1000;
+    padding: 1px;
 }

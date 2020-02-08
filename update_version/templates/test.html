@@ -12,7 +12,7 @@
   <section class="section">
     <div class="dropdown" id="myDropdown">
         <div class="dropdown-trigger">
-          <button class="button" onclick=myFunction() aria-controls="dropdown-menu2">
+          <button class="button" onclick=dropdown() aria-controls="dropdown-menu2">
             <span>Wifi <i class="fas fa-wifi"></i> </span>
             <span class="icon is-small">
               <i class="fas fa-angle-down" aria-hidden="true"></i>
@@ -32,11 +32,11 @@
   <div class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-        <form action="" class="box">
+        <form action="#" class="box">
             <div class="field">
               <label for="" class="label">Password</label>
               <div class="control has-icons-left">
-                <input type="password" placeholder="*******" class="input" required>
+                <input id="user_input" type="password" placeholder="*******" class="input" required>
                 <span class="icon is-small is-left">
                   <i class="fa fa-lock"></i>
                 </span>
@@ -44,9 +44,9 @@
             </div>
             <div class="field">
               
-              <button onclick=closeModal()  aria-label="close" class="button">Cancel</button>
-
-              <button class="button is-success"> Submit</button>
+              <button onclick=showInput()  aria-label="close" class="button">Cancel</button>
+           
+              <button onclick=showInput() class="button is-success"> Submit</button>
 
             </div>
           </form>
@@ -71,7 +71,7 @@
 var connections = [
     { SSID: "xfinitywifi", SECURITY: "WPA2", SIGNAL: "20" },
     { SSID: "Phone", SECURITY: "WPA2", SIGNAL: "100" },
-    { SSID: "Address", SECURITY: "WPA2", SIGNAL: "30" },
+    { SSID: "My Wifi", SECURITY: "WPA2", SIGNAL: "30" },
     { SSID: "Zip", SECURITY: "--", SIGNAL: "40" },
     { SSID: "Comments", SECURITY: "--", SIGNAL: "50" }
 ];
@@ -79,16 +79,19 @@ for (var i = 0; i < connections.length; i += 1) {
     console.log(connections[i].SSID)
     const div = document.createElement('a');
 
-    div.className = 'dropdown-item';
+    
     switch (connections[i].SECURITY) {
         case 'WPA2':
+        div.className = 'dropdown-item';
+
         div.id = 'open-modal';
 
-        div.innerHTML = `${ connections[i].SSID}<i class="fas fa-lock is-pulled-right"> </i> `;
+        div.innerHTML = `${ connections[i].SSID} <i class="fas fa-lock is-pulled-right"> </i> `;
         document.getElementById('dropdown-content').appendChild(div);
         break;
         default:
-        div.innerHTML = `${ connections[i].SSID} </i> `;
+        div.className = 'dropdown-item';
+        div.innerHTML = `${ connections[i].SSID} `;
         document.getElementById('dropdown-content').appendChild(div);
 
 
@@ -96,21 +99,21 @@ for (var i = 0; i < connections.length; i += 1) {
 
 }
 
-      function myFunction() {
-   
-  var element = document.getElementById("myDropdown");
-  var contains = element.classList.contains("is-active")
+function dropdown() {
 
-  switch(contains) {
-  case true:
-    element.classList.remove("is-active");
-    break;
-  case false:
-    element.classList.add("is-active");
-    break;
-  default:
-    // code block
-    } 
+    var element = document.getElementById("myDropdown");
+    var contains = element.classList.contains("is-active")
+
+    switch (contains) {
+        case true:
+            element.classList.remove("is-active");
+            break;
+        case false:
+            element.classList.add("is-active");
+            break;
+        default:
+        // code block
+    }
 
 }
 
@@ -124,15 +127,24 @@ function closeModal() {
 
 }
 
+function showInput() {
+        t = document.getElementById("user_input").value;
+        console.log(t)
+    }
+
+
 const cbox = document.querySelectorAll('a#open-modal')
 
  for (let i = 0; i < cbox.length; i++) {
     cbox[i].addEventListener('click', function(event) {
+        var str  = this.innerHTML
+        var res = str.split("<svg");
+        console.log(res[0])
         var modal = document.querySelector('.modal');  // assuming you have only 1
         var html = document.querySelector('html');
         modal.classList.add('is-active');
         html.classList.add('is-clipped');
-        console.log(modal)
+        
         modal.querySelector('.modal-background').addEventListener('click', function(e) {
         e.preventDefault();
         modal.classList.remove('is-active');
