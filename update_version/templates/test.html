@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Hello Bulma!</title>
     <link rel="stylesheet" href="../static/css/bulma.css">
+    <!-- <link rel="stylesheet" href="static/css/bulma.css"> -->
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   </head>
   <body>
   <section class="section">
-    <div class="dropdown is-active" id="myDropdown">
+    <div class="dropdown" id="myDropdown">
         <div class="dropdown-trigger">
           <button class="button" onclick=myFunction() aria-controls="dropdown-menu2">
             <span>Wifi <i class="fas fa-wifi"></i> </span>
@@ -19,16 +20,17 @@
           </button>
         </div>
         <div class="dropdown-menu" id="dropdown-menu2" role="menu">
-          <div class="dropdown-content">
-            <div class="dropdown-item">
+          <div class="dropdown-content" id="dropdown-content">
+            <div id="open-modal"  class="dropdown-item">
               <p>One-Wifi <i class="fas fa-lock is-pulled-right"></i> </p>
             </div>
             <hr class="dropdown-divider">
-            <div class="dropdown-item">
+            <div id="open-modal" class="dropdown-item" href="/static">
+                
               <p>TechGarage-6 <i class="fas fa-lock is-pulled-right"></i> </p>
             </div>
             <hr class="dropdown-divider">
-                <a id="open-modal" class="dropdown-item" href="">Open modal</a>
+                <a id="open-modal" class="dropdown-item" href="">Open modal <i class="fas fa-lock is-pulled-right"> </i> </a>
             </a>
           </div>
         </div>
@@ -55,7 +57,7 @@
               <button onclick=closeModal()  aria-label="close" class="button">Cancel</button>
 
               <button class="button is-success"> Submit</button>
-              
+
             </div>
           </form>
     </div>
@@ -74,6 +76,26 @@
 
 
   <script>
+
+
+var connections = [
+    { SSID: "xfinitywifi", SECURITY: "WPA2", SIGNAL: "20" },
+    { SSID: "Phone", SECURITY: "WPA2", SIGNAL: "100" },
+    { SSID: "Address", SECURITY: "WPA2", SIGNAL: "30" },
+    { SSID: "Zip", SECURITY: "WPA2", SIGNAL: "40" },
+    { SSID: "Comments", SECURITY: "WPA2", SIGNAL: "50" }
+];
+for (var i = 0; i < connections.length; i += 1) {
+    console.log(connections[i].SSID)
+    const div = document.createElement('a');
+
+    div.className = 'dropdown-item';
+    div.id = 'open-modal';
+    div.innerHTML = `${ connections[i].SSID}<i class="fas fa-lock is-pulled-right"> </i> `;
+    document.getElementById('dropdown-content').appendChild(div);
+
+}
+
       function myFunction() {
    
   var element = document.getElementById("myDropdown");
@@ -102,20 +124,35 @@ function closeModal() {
 
 }
 
+const cbox = document.querySelectorAll('a#open-modal')
 
-document.querySelector('a#open-modal').addEventListener('click', function(event) {
-  event.preventDefault();
-  var modal = document.querySelector('.modal');  // assuming you have only 1
-  var html = document.querySelector('html');
-  modal.classList.add('is-active');
-  html.classList.add('is-clipped');
-
-  modal.querySelector('.modal-background').addEventListener('click', function(e) {
-    e.preventDefault();
-    modal.classList.remove('is-active');
-    html.classList.remove('is-clipped');
-  });
-});
+ for (let i = 0; i < cbox.length; i++) {
+    cbox[i].addEventListener('click', function(event) {
+        var modal = document.querySelector('.modal');  // assuming you have only 1
+        var html = document.querySelector('html');
+        modal.classList.add('is-active');
+        html.classList.add('is-clipped');
+        console.log(modal)
+        modal.querySelector('.modal-background').addEventListener('click', function(e) {
+        e.preventDefault();
+        modal.classList.remove('is-active');
+        html.classList.remove('is-clipped');
+    });
+ })
+ }
+// document.querySelectorAll('a#open-modal').addEventListener('click', function(event) {
+//   event.preventDefault();
+//   var modal = document.querySelectorAll('.modal');  // assuming you have only 1
+//   var html = document.querySelector('html');
+//   modal.classList.add('is-active');
+//   html.classList.add('is-clipped');
+//   console.log(modal)
+//   modal.querySelector('.modal-background').addEventListener('click', function(e) {
+//     e.preventDefault();
+//     modal.classList.remove('is-active');
+//     html.classList.remove('is-clipped');
+//   });
+// });
 
 
 

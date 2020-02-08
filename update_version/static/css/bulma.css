@@ -6333,7 +6333,6 @@ print {
 
 a.dropdown-item,
 button.dropdown-item {
-    padding-right: 3rem;
     text-align: left;
     white-space: nowrap;
     width: 100%

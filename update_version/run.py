@@ -13,4 +13,5 @@ reader = csv.DictReader(stdout.decode('utf-8').splitlines(),
                                     'SIGNAL', 'BARS', 'SECURITY'])
 
 for row in reader:
-    print(row['SSID'], row['MODE'],row['CHAN'], row['RATENUM'], row['RATE'], row['SIGNAL'], row['BARS'], row['SECURITY'])
+    if row['SSID'] != '--':
+        print(row['SSID'], row['MODE'],row['CHAN'], row['RATENUM'], row['RATE'], row['SIGNAL'], row['BARS'], row['SECURITY'])
