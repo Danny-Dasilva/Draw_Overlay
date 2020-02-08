@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Hello Bulma!</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <link rel="stylesheet" href="../static/css/bulma.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   </head>
   <body>
@@ -12,7 +12,7 @@
     <div class="dropdown is-active" id="myDropdown">
         <div class="dropdown-trigger">
           <button class="button" onclick=myFunction() aria-controls="dropdown-menu2">
-            <span>Content</span>
+            <span>Wifi <i class="fas fa-wifi"></i> </span>
             <span class="icon is-small">
               <i class="fas fa-angle-down" aria-hidden="true"></i>
             </span>
@@ -21,21 +21,53 @@
         <div class="dropdown-menu" id="dropdown-menu2" role="menu">
           <div class="dropdown-content">
             <div class="dropdown-item">
-              <p>You can insert <strong>any type of content</strong> within the dropdown menu.</p>
+              <p>One-Wifi <i class="fas fa-lock is-pulled-right"></i> </p>
             </div>
             <hr class="dropdown-divider">
             <div class="dropdown-item">
-              <p>You simply need to use a <code>&lt;div&gt;</code> instead.</p>
+              <p>TechGarage-6 <i class="fas fa-lock is-pulled-right"></i> </p>
             </div>
             <hr class="dropdown-divider">
-            <a href="#" class="dropdown-item">
-              This is a link
+                <a id="open-modal" class="dropdown-item" href="">Open modal</a>
             </a>
           </div>
         </div>
       </div>
   </section>
 
+  
+
+  <div class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <form action="" class="box">
+            <div class="field">
+              <label for="" class="label">Password</label>
+              <div class="control has-icons-left">
+                <input type="password" placeholder="*******" class="input" required>
+                <span class="icon is-small is-left">
+                  <i class="fa fa-lock"></i>
+                </span>
+              </div>
+            </div>
+            <div class="field">
+              <button class="button is-success">
+                Submit
+              </button>
+              <button onclick=closeModal()  aria-label="close" class="button">Cancel</button>
+
+            </div>
+          </form>
+    </div>
+  </div>
+  </div>
+
+
+
+
+
+           
+        
 
   </body>
 
@@ -59,6 +91,32 @@
     } 
 
 }
+
+
+function closeModal() {
+    var modal = document.querySelector('.modal');  // assuming you have only 1
+    var html = document.querySelector('html');
+    modal.classList.remove('is-active');
+    html.classList.remove('is-clipped');
+
+
+}
+
+
+document.querySelector('a#open-modal').addEventListener('click', function(event) {
+  event.preventDefault();
+  var modal = document.querySelector('.modal');  // assuming you have only 1
+  var html = document.querySelector('html');
+  modal.classList.add('is-active');
+  html.classList.add('is-clipped');
+
+  modal.querySelector('.modal-background').addEventListener('click', function(e) {
+    e.preventDefault();
+    modal.classList.remove('is-active');
+    html.classList.remove('is-clipped');
+  });
+});
+
 
 
 
