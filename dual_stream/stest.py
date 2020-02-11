@@ -12,26 +12,35 @@ sockets = Sockets(app)
 
 connections = []
 messages = []
-usernames = {}
+
 
 @sockets.route("/chat")
 def chat_socket(web_socket):
-    print("connefc")
-    global connections, usernames
+    print("ahhh")
+    global connections
     connections = add_socket(web_socket, connections)
     #data = json.loads(web_socket.receive())
-    print(web_socket.receive())
+    
+    
+        
     while not web_socket.closed:
         
         connections = remove_closed_sockets(connections)
-        msg = 6
-        sleep(.5)
-        send_message(msg, connections)
+        msg = [2, 2, 2, 2, 2,3 ,4 ,6]
+        for value in msg:
+            if value == 6:
+                print("web_socket.close()")
+            send_message(value, connections)
+            
 
 def add_socket(web_socket, connections):
     return connections + [web_socket]
 
+def close_all():
+    connections = []
+
 def remove_closed_sockets(connections):
+    print("removed")
     return [c for c in connections if not c.closed]
 
 def send_message(message, connections):
@@ -43,6 +52,7 @@ def hello():
     return render_template('ss.html')
 @app.route('/eee')
 def eee():
+    close_all()
     print("requestr")
     return 'eee'
 
