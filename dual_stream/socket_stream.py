@@ -32,11 +32,13 @@ def stream():
 
 @sockets.route('/stream')
 def yeet(socket):
-    t = svg(q)
-    for buffer in t:
-        if buffer:
-            
-            socket.send(buffer)
+    print(socket)
+    while not socket.closed:
+        t = svg(q)
+        for buffer in t:
+            if buffer:
+                
+                socket.send(buffer)
 
 
 def run_server(q):

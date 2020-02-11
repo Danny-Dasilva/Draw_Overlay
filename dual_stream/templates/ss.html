@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+<script>
+  if (window.location.protocol == "https:") {
+  var ws_scheme = "wss://";
+} else {
+  var ws_scheme = "ws://";
+}
+
+var socket = new WebSocket(ws_scheme + location.host + "/chat");
+
+socket.onopen = function (event) {
+
+    socket.send("open");
+    console.log("Websocket open!");
+}
+
+socket.onclose = function (event) {
+    socket.send("closed");
+    socket.close();
+    console.log("Websocket closed!");
+}
+
+socket.onmessage = function (event) {
+    console.log("inc")
+    // if (incomingMessage["message"]) {
+    //     addMessageToChatScreen(incomingMessage);
+    // } else if (incomingMessage["usernames"]) {
+    //     usernames = incomingMessage["usernames"];
+    // }
+}
+</script>
+</html>

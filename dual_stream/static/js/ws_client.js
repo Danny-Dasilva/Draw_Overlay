@@ -165,15 +165,6 @@ window.onload = function() {
           break;
         case 'usbvid':
           player1.decode(clientBound.usbvid.data);
-          //player.decode(clientBound.overlay.svg);
-          // var canvas = document.getElementById("overlay");
-          // var ctx = canvas.getContext("2d");
-          // var img = new Image();
-          // img.onload = function() {
-          //   ctx.clearRect(0, 0, canvas.width, canvas.height);
-          //   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          // }
-          // img.src = "data:image/svg+xml;charset=utf-8," + clientBound.overlay.svg;
           break;
         case 'stop':
           console.log("Stopped.");
