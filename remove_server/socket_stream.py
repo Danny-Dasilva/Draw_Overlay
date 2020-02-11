@@ -42,15 +42,8 @@ def byte():
         return Response(svg(q), content_type='text/event-stream')
 
 
-# @sockets.route('/stream')
-# def stream(socket):
-#     t = svg(q)
-#     for buffer in t:
-#         if buffer:
-            
-#             socket.send(buffer)
 
-@sockets.route('/yeet')
+@sockets.route('/stream')
 def yeet(socket):
     t = svg(q)
     for buffer in t:
@@ -58,17 +51,6 @@ def yeet(socket):
             
             socket.send(buffer)
 
-# @sockets.route('/stream')
-# def stream(socket):
-#     # t = svg(q)
-#     # for buffer in t:
-#     #     if buffer:
-#     buffer = b'\x82\x0e\n\x06\x08\x80\x05\x10\xe0\x03P\x81\xe1\xbf\xff\x0f'
-#     buffer = b'\x82)\x1a!\n\x1f\x00\x00\x00\x01gB\xc0\x1e\xda\x02\x80\xf6\xc0Z\x83\x00\x82\xd2\x80\x00\x00\x03\x00\x80\x00\x00\x1eG\x8b\x17PP\xd5\x91\xec\xf7\x170\x00\x00\x01gB\xc0\x1e\xda\x02\x80\xf6\xc0Z\x83\x00\x82\xd2\x80\x00\x00\x03\x00\x80\x00\x00\x1eG\x8b\x17PP\xd5\x91\xec\xf7\x17'
-#     buffer = b'\x82\x0e\n\x06\x08\x80\x05\x10\xe0\x03P\x82\xcf\xb0\xcb\x17'
-#     message = socket.receive()
-#     print(message)
-#     socket.send(buffer)
 
 def run_server(q):
     logging.basicConfig(level=logging.INFO)

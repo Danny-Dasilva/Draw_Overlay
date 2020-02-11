@@ -106,7 +106,7 @@ def main():
 
     t1.start()
     t1.deamon = True
-    socketio.run(app, host="0.0.0.0", debug=False)
+    socketio.run(app, host="0.0.0.0", port=5000, debug=False)
     
     #app.run(host="0.0.0.0", debug=False)
     
