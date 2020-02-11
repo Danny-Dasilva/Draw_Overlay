@@ -24,20 +24,15 @@ def svg(q):
         yield c
 @app.route('/')
 def init():
+    return render_template('test.html')
+
+@app.route('/stream')
+def stream():
     return render_template('index.html')
-    
+
 @sockets.route('/stream')
 def yeet(socket):
     t = svg(q)
-    for buffer in t:
-        if buffer:
-            
-            socket.send(buffer)
-
-
-@sockets.route('/stream1')
-def stream1(socket):
-    t = svg(qu)
     for buffer in t:
         if buffer:
             
