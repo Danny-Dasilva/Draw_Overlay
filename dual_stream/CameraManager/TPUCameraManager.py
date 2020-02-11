@@ -1,4 +1,4 @@
-from . import gstreamer
+from . import ggstreamer as gstreamer
 import threading
 import enum
 import numpy as np

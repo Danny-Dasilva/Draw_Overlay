@@ -6,7 +6,7 @@ from flask import Flask, render_template, url_for, Response, request
 import signal
 import threading
 import queue
-from camera import make_camera
+from camera import Camera
 from streaming.server import StreamingServer
 from geventwebsocket.handler import WebSocketHandler
 from gevent.pywsgi import WSGIServer
@@ -59,7 +59,7 @@ def run_server(q):
     args = parser.parse_args()
 
   
-    camera = make_camera(args.source)
+    camera = Camera()
 
     with StreamingServer(camera, q, qu, args.bitrate) as server:
         

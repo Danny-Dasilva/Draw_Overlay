@@ -14,9 +14,8 @@
 
 import os
 import threading
-import gstreamer
 from time import sleep
-from TPUCameraManager.TPUCameraManager import CameraManager, GStreamerPipelines
+from CameraManager.TPUCameraManager import CameraManager, GStreamerPipelines
 
 from gst import *
 camMan = CameraManager() #Creates new camera manager object
@@ -32,16 +31,17 @@ USBCam.startPipeline()
 
 
 class Camera:
-    def __init__(self, render_size, loop):
+    def __init__(self):
         
-        self._layout = gstreamer.make_layout(render_size)
-        self._loop = loop
+        #self._layout = gstreamer.make_layout(render_size)
+        # self._loop = loop
         self._thread = None
         self.render_overlay = None
 
     @property
     def resolution(self):
-        return self._layout.render_size
+        pass
+        #return self._layout.render_size
 
     def request_key_frame(self):
         pass
@@ -67,20 +67,17 @@ class Camera:
   
 
 
-class DeviceCamera(Camera):
-    def __init__(self, fmt):
-        super().__init__(fmt.size, loop=False)
-        self._fmt = fmt
+# class DeviceCamera(Camera):
+#     def __init__(self, fmt):
+#         pass
 
-    def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
-        return pipelines.camera_streaming_pipeline(self._fmt, profile, bitrate, self._layout)
-
-def make_camera(source):
-    fmt = parse_format(source)
+#     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
+#         pass
+# def make_camera(source):
     
-    if fmt:
-        return DeviceCamera(fmt)
+    
+#     return DeviceCamera(fmt)
 
     
 
-    return None
+#     return None
