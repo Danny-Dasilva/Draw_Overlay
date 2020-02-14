@@ -26,15 +26,17 @@ from CameraManager.TPUCameraManager import CameraManager, GStreamerPipelines
 import numpy as np
 from gst import *
 camMan = CameraManager() #Creates new camera manager object
-# USBCam = camMan.newCam(1) #Creates new RGB CSI-camera
+
 CSICam = camMan.newCam(0)
-# CV = USBCam.addPipeline(GStreamerPipelines.H264,(640,480),30,"CV") #Creates an RGB stream at 30 fps and 640x480 for openCV
-AI = CSICam.addPipeline(GStreamerPipelines.H264,(640,480),30,"h264sink")
-CV = CSICam.addPipeline(GStreamerPipelines.RGB,(320, 320),30,"CV")
+#
+H264 = CSICam.addPipeline(GStreamerPipelines.H264,(640,480),30,"h264sink")
+AI = CSICam.addPipeline(GStreamerPipelines.RGB,(320, 320),30,"CV")
 
 CSICam.startPipeline() 
-
-# USBCam.startPipeline()
+if os.path.exists('/dev/video1'):
+    USBCam = camMan.newCam(1) #Creates new RGB CSI-camera
+    SB = USBCam.addPipeline(GStreamerPipelines.H264,(640,480),30,"CV") #Creates an RGB stream at 30 fps and 640x480 for openCV
+    USBCam.startPipeline()
 
 class Camera:
     def __init__(self, model_res):
@@ -68,7 +70,7 @@ class Camera:
             return None
         
         objFunc = obj.write
-        AI.addListener(objFunc)
+        H264.addListener(objFunc)
 
         self._thread = threading.Thread(target=self.render_overlay1,)
         self._thread.start()
@@ -79,10 +81,9 @@ class Camera:
     def render_overlay1(self):
             while True:
                 if self.render_overlay:
-                    t = bytes(CV) #RGB Byte Stream that can be converted to a numpy array\
-                    tensor = np.frombuffer(bytes(CV),dtype=np.uint8)
+                    tensor = np.frombuffer(bytes(AI),dtype=np.uint8)
                     layout = None
-                    command = Non
+                    command = None
                     self.render_overlay(tensor, layout, command)
                 sleep(.03)
     def stop_recording(self):
