@@ -30,14 +30,15 @@ camMan = CameraManager() #Creates new camera manager object
 CSICam = camMan.newCam(0)
 #
 H264 = CSICam.addPipeline(GStreamerPipelines.H264,(640,480),30,"h264sink")
-AI = CSICam.addPipeline(GStreamerPipelines.RGB,(320, 320),30,"CV")
+AI = CSICam.addPipeline(GStreamerPipelines.RGB,(320, 320),30,"AI")
 
 CSICam.startPipeline() 
 if os.path.exists('/dev/video1'):
     USBCam = camMan.newCam(1) #Creates new RGB CSI-camera
-    SB = USBCam.addPipeline(GStreamerPipelines.H264,(640,480),30,"CV") #Creates an RGB stream at 30 fps and 640x480 for openCV
+    SB = USBCam.addPipeline(GStreamerPipelines.H264,(640,480),30,"usb_cam") #Creates an RGB stream at 30 fps and 640x480 for openCV
     USBCam.startPipeline()
-
+else:
+    USBCam = None
 class Camera:
     def __init__(self, model_res):
         #def __init__(self, render_size, inference_size, loop):
@@ -59,6 +60,13 @@ class Camera:
         
         objFunc = obj.write
         H264.addListener(objFunc)
+
+        if USBCam:
+
+            objFunc = obj.write_usb
+            SB.addListener(objFunc)
+
+
 
         self._thread = threading.Thread(target=self.ai_stream)
         self._thread.start()

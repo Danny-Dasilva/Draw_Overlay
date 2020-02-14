@@ -350,6 +350,16 @@ class StreamingServer:
             if ClientState.ENABLED_NEEDS_SPS in states:
                 logger.info('Requesting key frame')
                 self._camera.request_key_frame()
+                
+    def write_usb(self, data):
+        """Called by camera thread for each compressed frame."""
+        assert data[0:4] == b'\x00\x00\x00\x01'
+        frame_type = data[4] & 0b00011111
+        if frame_type in ALLOWED_NALS:
+            states = {client.send_video(frame_type, data) for client in self._enabled_clients}
+            if ClientState.ENABLED_NEEDS_SPS in states:
+                logger.info('Requesting key frame')
+                self._camera.request_key_frame()
 
 class ClientLogger(logging.LoggerAdapter):
     def process(self, msg, kwargs):
