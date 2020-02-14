@@ -157,7 +157,7 @@ def render_gen(args):
     output = None
     while True:
         tensor, layout, command = (yield output)
-        print(tensor.shape, tensor, type(tensor[0]))
+
         inference_rate = next(fps_counter)
         if draw_overlay:
             start = time.monotonic()

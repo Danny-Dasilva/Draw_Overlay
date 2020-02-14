@@ -56,29 +56,17 @@ class Camera:
 
     def start_recording(self, obj, format, profile, inline_headers, bitrate, intra_period):
         #Start gstreamer Streams
-        def on_buffer(data, _):
-            
-            obj.write(data)
-
-        
-                # if(CV):
-                #     print("Camera Streaming")
-                #     t = bytes(CV) #RGB Byte Stream that can be converted to a numpy array\
-                #     print(np.frombuffer(t).shape, "tttttt")
-
-                    # self.render_overlay(tensor, layout, command)
-            return None
         
         objFunc = obj.write
         H264.addListener(objFunc)
 
-        self._thread = threading.Thread(target=self.render_overlay1,)
+        self._thread = threading.Thread(target=self.ai_stream)
         self._thread.start()
 
 
         
         
-    def render_overlay1(self):
+    def ai_stream(self):
             while True:
                 if self.render_overlay:
                     tensor = np.frombuffer(bytes(AI),dtype=np.uint8)
