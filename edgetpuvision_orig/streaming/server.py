@@ -291,9 +291,7 @@ class StreamingServer:
             logger.info('Number of active clients: %d', len(self._clients))
 
         is_streaming = bool(self._enabled_clients)
-        print(was_streaming, is_streaming, "aaaaaa")
         if not was_streaming and is_streaming:
-            print("start recordingsssss")
             self._start_recording()
         if was_streaming and not is_streaming:
             self._stop_recording()
@@ -345,10 +343,8 @@ class StreamingServer:
 
     def write(self, data):
         """Called by camera thread for each compressed frame."""
-        print("writeinserver")
         assert data[0:4] == b'\x00\x00\x00\x01'
         frame_type = data[4] & 0b00011111
-        print(len(data))
         if frame_type in ALLOWED_NALS:
             states = {client.send_video(frame_type, data) for client in self._enabled_clients}
             if ClientState.ENABLED_NEEDS_SPS in states:

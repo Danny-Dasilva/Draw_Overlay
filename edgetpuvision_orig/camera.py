@@ -58,6 +58,7 @@ class Camera:
             if self.render_overlay:
                 self.render_overlay(tensor, layout, command)
             return None
+        
         print(obj, "objjjj")
         objFunc = obj.write
         AI.addListener(objFunc)
