@@ -1,11 +1,10 @@
 import os.path
 from CameraManager.TPUCameraManager import CameraManager, GStreamerPipelines
-import numpy as np
 camMan = CameraManager() #Creates new camera manager object
 streamStarted = False
 cameras = {"USB":1,"CSI":0}
 
-streamingCamera = "CSI" #Change this for a differnt camera
+streamingCamera = "USB" #Change this for a differnt camera
 
 while True:
     try:
@@ -19,8 +18,7 @@ while True:
                 pass
             if(CV):
                 print("Camera Streaming")
-                t = bytes(CV) #RGB Byte Stream that can be converted to a numpy array\
-                print(np.frombuffer(t).shape)
+                print(bytes(CV)) #RGB Byte Stream that can be converted to a numpy array
         else:
             print("Camera Disconnected")
             if(streamStarted == True):

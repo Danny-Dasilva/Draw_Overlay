@@ -15,16 +15,12 @@
 import os
 import threading
 import numpy as np
-import gstreamer
-import pipelines
 from time import sleep
-from gst import *
 import os
 import threading
 from time import sleep
 from CameraManager.TPUCameraManager import CameraManager, GStreamerPipelines
 import numpy as np
-from gst import *
 camMan = CameraManager() #Creates new camera manager object
 
 CSICam = camMan.newCam(0)
