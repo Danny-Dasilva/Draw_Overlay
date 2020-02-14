@@ -20,6 +20,7 @@ function createPlayer(width, height, streamControl) {
 
   var container = document.getElementById("container");
 
+  
   var cropDiv = document.createElement("div");
   cropDiv.style.overflow = "hidden";
   cropDiv.style.position = "absolute";
@@ -34,6 +35,8 @@ function createPlayer(width, height, streamControl) {
   canvas.width = width;
   canvas.height = height;
   container.appendChild(canvas);
+
+  
 
   return player
 }
@@ -62,20 +65,10 @@ function createPlayer1(width, height, streamControl) {
   var container = document.getElementById("container1");
 
   var cropDiv = document.createElement("div");
-  cropDiv.style.overflow = "hidden";
-  cropDiv.style.position = "relative";
-  cropDiv.style.width = width + "px";
-  cropDiv.style.height = height + "px";
-  cropDiv.style.paddingLeft = 640 + "px"
+  cropDiv.style.paddingLeft = "640px"
+  
   cropDiv.appendChild(player.canvas);
   container.appendChild(cropDiv);
-
-  var canvas = document.createElement("canvas1");
-  canvas.id = "overlay"
-  canvas.style.position = "relative";
-  canvas.width = width;
-  canvas.height = height;
-  container.appendChild(canvas);
 
   return player
 }
