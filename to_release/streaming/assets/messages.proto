@@ -16,6 +16,7 @@ message ClientBound {
     Stop stop = 2;
     Video video = 3;
     Overlay overlay = 4;
+    Usb usb = 5;
   }
   uint64 timestamp_us = 10;
 }
@@ -34,4 +35,8 @@ message Video {
 
 message Overlay {
   string svg = 1;
+}
+
+message Usb {
+  bytes data = 1;
 }

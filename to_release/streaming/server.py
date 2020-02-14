@@ -46,7 +46,9 @@ def StopMessage():
 def VideoMessage(data):
     return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
                            video=pb2.Video(data=data))
-
+def USBMessage(data):
+    return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
+                           usb=pb2.Usb(data=data))
 def OverlayMessage(svg):
     return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
                            overlay=pb2.Overlay(svg=svg))
@@ -356,7 +358,7 @@ class StreamingServer:
         assert data[0:4] == b'\x00\x00\x00\x01'
         frame_type = data[4] & 0b00011111
         if frame_type in ALLOWED_NALS:
-            states = {client.send_video(frame_type, data) for client in self._enabled_clients}
+            states = {client.send_usb_vid(frame_type, data) for client in self._enabled_clients}
             if ClientState.ENABLED_NEEDS_SPS in states:
                 logger.info('Requesting key frame')
                 self._camera.request_key_frame()
@@ -414,7 +416,21 @@ class Client:
                 if dropped:
                     self._state = ClientState.ENABLED_NEEDS_SPS
             return self._state
-
+    def send_usb_vid(self, frame_type, data):
+        """Only called by camera thread."""
+        with self._lock:
+            if self._state == ClientState.DISABLED:
+                pass
+            elif self._state == ClientState.ENABLED_NEEDS_SPS:
+                if frame_type == NAL.SPS:
+                    dropped = self._queue_usb_video(data)
+                    if not dropped:
+                        self._state = ClientState.ENABLED
+            elif self._state == ClientState.ENABLED:
+                dropped = self._queue_usb_video(data)
+                if dropped:
+                    self._state = ClientState.ENABLED_NEEDS_SPS
+            return self._state
     def send_overlay(self, svg):
         """Can be called by any user thread."""
         with self._lock:
@@ -490,7 +506,8 @@ class ProtoClient(Client):
 
     def _queue_video(self, data):
         return self._queue_message(VideoMessage(data))
-
+    def _queue_usb_video(self, data):
+        return self._queue_message(USBMessage(data))
     def _queue_overlay(self, svg):
         return self._queue_message(OverlayMessage(svg))
 

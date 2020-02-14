@@ -38,6 +38,50 @@ function createPlayer(width, height, streamControl) {
   return player
 }
 
+
+function createPlayer1(width, height, streamControl) {
+  var player = new Player({
+    useWorker: true,
+    workerFile: "broadway/Decoder.js",
+    reuseMemory: true,
+    webgl: "auto",
+    size: {
+      width: width,
+      height: height,
+    }
+  });
+
+  var frameCount = 0
+  player.onPictureDecoded = function(data) {
+    if (frameCount == 0) {
+      console.log("First frame decoded");
+    }
+    frameCount++;
+  };
+
+  var container = document.getElementById("container1");
+
+  var cropDiv = document.createElement("div");
+  cropDiv.style.overflow = "hidden";
+  cropDiv.style.position = "relative";
+  cropDiv.style.width = width + "px";
+  cropDiv.style.height = height + "px";
+  cropDiv.style.paddingLeft = 640 + "px"
+  cropDiv.appendChild(player.canvas);
+  container.appendChild(cropDiv);
+
+  var canvas = document.createElement("canvas1");
+  canvas.id = "overlay"
+  canvas.style.position = "relative";
+  canvas.width = width;
+  canvas.height = height;
+  container.appendChild(canvas);
+
+  return player
+}
+
+
+
 window.onload = function() {
   protobuf.load("messages.proto", function(err, root) {
     if (err)
@@ -52,6 +96,8 @@ window.onload = function() {
     }
 
     var player = null;
+    var player1 = null;
+
     var socket = new WebSocket("ws://" + window.location.host + "/stream");
     socket.binaryType = "arraybuffer";
 
@@ -65,7 +111,9 @@ window.onload = function() {
     };
 
     socket.onmessage = function(event) {
+      
       var clientBound = ClientBound.decode(new Uint8Array(event.data))
+
       switch (clientBound.message) {
         case 'start':
           console.log('Starting...')
@@ -75,10 +123,19 @@ window.onload = function() {
             player = createPlayer(start.width, start.height, streamControl);
             console.log("Started: " + start.width + "x" + start.height);
           }
+          if (player1 == null) {
+            console.log('1Starting...')
+            player1 = createPlayer1(start.width, start.height, streamControl);
+            console.log("1Started: " + start.width + "x" + start.height);
+          }
+
           break;
         case 'video':
           player.decode(clientBound.video.data);
           break;
+        case 'usb':
+            player1.decode(clientBound.usb.data);
+            break;
         case 'overlay':
           var canvas = document.getElementById("overlay");
           var ctx = canvas.getContext("2d");

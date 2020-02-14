@@ -61,7 +61,7 @@ class Camera:
         objFunc = obj.write
         H264.addListener(objFunc)
 
-        if USBCam:
+        if USBCam is not None:
 
             objFunc = obj.write_usb
             SB.addListener(objFunc)
