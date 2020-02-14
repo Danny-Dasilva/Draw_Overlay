@@ -15,9 +15,7 @@
 import argparse
 import logging
 import signal
-
-from camera import make_camera
-from gstreamer import Display, run_gen
+from camera import Camera
 from streaming.server import StreamingServer
 
 import svg
@@ -40,32 +38,16 @@ def run_server(add_render_gen_args, render_gen):
     args = parser.parse_args()
 
     gen = render_gen(args)
-    camera = make_camera(args.source, next(gen), args.loop)
+    #add args for creating model
+    camera = Camera()
+    
     assert camera is not None
 
     with StreamingServer(camera, args.bitrate) as server:
+        print(dir(camera))
         def render_overlay(tensor, layout, command):
             overlay = gen.send((tensor, layout, command))
             server.send_overlay(overlay if overlay else EMPTY_SVG)
-
+        
         camera.render_overlay = render_overlay
         signal.pause()
-
-
-def run_app(add_render_gen_args, render_gen):
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--source',
-                        help='/dev/videoN:FMT:WxH:N/D or .mp4 file or image file',
-                        default='/dev/video0:YUY2:1280x720:30/1')
-    parser.add_argument('--loop',  default=False, action='store_true',
-                        help='Loop input video file')
-    parser.add_argument('--displaymode', type=Display, choices=Display, default=Display.FULLSCREEN,
-                        help='Display mode')
-    add_render_gen_args(parser)
-    args = parser.parse_args()
-
-    if not run_gen(render_gen(args),
-                   source=args.source,
-                   loop=args.loop,
-                   display=args.displaymode):
-        print('Invalid source argument:', args.source)

@@ -12,50 +12,14 @@ import subprocess
 import sys
 import threading
 import time
-import json
+
 from enum import Enum
 from http.server import BaseHTTPRequestHandler
 from itertools import cycle
 
-
-def write_json(nput):
-    print(nput, "write")
-    with open('streaming/assets/static/data.json') as f:
-        
-        try:
-            data = json.load(f)
-       
-            data.update(nput)
-          
-        except:
-            data = nput
-       
-    print(data, "read")
-    with open('streaming/assets/static/data.json', 'w') as f:
-        json.dump(data, f)
-    f.close()
-
-
-def delete_json(nput):
-    with open('streaming/assets/static/data.json') as f:
-        
-        
-        data = json.load(f)
-        print(data, "input", nput)
-        del data[nput] 
-
-    with open('streaming/assets/static/data.json', 'w') as f:
-        json.dump(data, f)
-    f.close()
-
 from .proto import messages_pb2 as pb2
 
 logger = logging.getLogger(__name__)
-
-
-
-
-
 
 class NAL:
     CODED_SLICE_NON_IDR = 1  # Coded slice of a non-IDR picture
@@ -102,8 +66,6 @@ def _file_content_type(path):
     if path.endswith('.html'):
         return 'text/html; charset=utf-8'
     elif path.endswith('.js'):
-        return 'text/javascript; charset=utf-8'
-    elif path.endswith('.json'):
         return 'text/javascript; charset=utf-8'
     elif path.endswith('.css'):
         return 'text/css; charset=utf-8'
@@ -329,8 +291,9 @@ class StreamingServer:
             logger.info('Number of active clients: %d', len(self._clients))
 
         is_streaming = bool(self._enabled_clients)
-
+        print(was_streaming, is_streaming, "aaaaaa")
         if not was_streaming and is_streaming:
+            print("start recordingsssss")
             self._start_recording()
         if was_streaming and not is_streaming:
             self._stop_recording()
@@ -382,8 +345,10 @@ class StreamingServer:
 
     def write(self, data):
         """Called by camera thread for each compressed frame."""
+        print("writeinserver")
         assert data[0:4] == b'\x00\x00\x00\x01'
         frame_type = data[4] & 0b00011111
+        print(len(data))
         if frame_type in ALLOWED_NALS:
             states = {client.send_video(frame_type, data) for client in self._enabled_clients}
             if ClientState.ENABLED_NEEDS_SPS in states:
@@ -410,7 +375,6 @@ class Client:
         self._state = ClientState.DISABLED
         self._logger = ClientLogger(logger, {'name': name})
         self._socket = sock
-        print(sock, "ajhhjhjjj")
         self._commands = command_queue
         self._tx_q = DroppingQueue(15)
         self._rx_thread = threading.Thread(target=self._rx_run)
@@ -689,7 +653,6 @@ class WsProtoClient(ProtoClient):
 
     def _process_web_request(self):
         request = _read_http_request(self._socket)
-        print("ahh", request)
         request = HTTPRequest(request)
         connection = request.headers['Connection']
         upgrade = request.headers['Upgrade']
@@ -698,19 +661,7 @@ class WsProtoClient(ProtoClient):
             self._queue_message(_http_switching_protocols(sec_websocket_key))
             self._logger.info('Upgraded to WebSocket')
             return False
-        if request.command == 'POST':
-            if request.path == "/add_profile":
-                data = request.headers['Authority']
-                
-                data = json.loads(data)
-                
-                write_json(data)
-            if request.path == "/delete_profile":
-                data = request.headers['Authority']
-                data = json.loads(data)
-                delete_json(data)
 
-            return True
         if request.command == 'GET':
             content, content_type = _read_asset(request.path)
             if content is None:

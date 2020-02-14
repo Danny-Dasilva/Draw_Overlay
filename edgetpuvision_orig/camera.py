@@ -19,17 +19,32 @@ import gstreamer
 import pipelines
 
 from gst import *
+import os
+import threading
+from time import sleep
+from CameraManager.TPUCameraManager import CameraManager, GStreamerPipelines
+
+from gst import *
+camMan = CameraManager() #Creates new camera manager object
+# USBCam = camMan.newCam(1) #Creates new RGB CSI-camera
+CSICam = camMan.newCam(0)
+# CV = USBCam.addPipeline(GStreamerPipelines.H264,(640,480),30,"CV") #Creates an RGB stream at 30 fps and 640x480 for openCV
+AI = CSICam.addPipeline(GStreamerPipelines.H264,(640,480),30,"h264sink")
+
+CSICam.startPipeline() #Start gstreamer Streams
+# USBCam.startPipeline()
 
 class Camera:
-    def __init__(self, render_size, inference_size, loop):
-        self._layout = gstreamer.make_layout(inference_size, render_size)
-        self._loop = loop
+    def __init__(self):
+        #def __init__(self, render_size, inference_size, loop):
+        # self._layout = gstreamer.make_layout(inference_size, render_size)
+        # self._loop = loop
         self._thread = None
         self.render_overlay = None
 
     @property
     def resolution(self):
-        return self._layout.render_size
+        return [640, 480]
 
     def request_key_frame(self):
         pass
@@ -43,51 +58,42 @@ class Camera:
             if self.render_overlay:
                 self.render_overlay(tensor, layout, command)
             return None
+        print(obj, "objjjj")
+        objFunc = obj.write
+        AI.addListener(objFunc)
 
-        signals = {
-          'h264sink': {'new-sample': gstreamer.new_sample_callback(on_buffer)},
-        }
-
-        pipeline = self.make_pipeline(format, profile, inline_headers, bitrate, intra_period)
-
-        self._thread = threading.Thread(target=gstreamer.run_pipeline,
-                                        args=(pipeline, self._layout, self._loop,
-                                              render_overlay, gstreamer.Display.NONE,
-                                              False, signals))
-        self._thread.start()
 
     def stop_recording(self):
-        gstreamer.quit()
-        self._thread.join()
+        raise NotImplemented
 
     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
         raise NotImplemented
 
-class FileCamera(Camera):
-    def __init__(self, filename, inference_size, loop):
-        info = gstreamer.get_video_info(filename)
-        super().__init__((info.get_width(), info.get_height()), inference_size,
-                          loop=loop)
-        self._filename = filename
+# class FileCamera(Camera):
+#     def __init__(self, filename, inference_size, loop):
+#         info = gstreamer.get_video_info(filename)
+#         super().__init__((info.get_width(), info.get_height()), inference_size,
+#                           loop=loop)
+#         self._filename = filename
 
-    def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
-        return pipelines.video_streaming_pipeline(self._filename, self._layout)
+#     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
+#         return pipelines.video_streaming_pipeline(self._filename, self._layout)
 
-class DeviceCamera(Camera):
-    def __init__(self, fmt, inference_size):
-        super().__init__(fmt.size, inference_size, loop=False)
-        self._fmt = fmt
+# class DeviceCamera(Camera):
+#     def __init__(self, fmt, inference_size):
+#         super().__init__(fmt.size, inference_size, loop=False)
+#         self._fmt = fmt
 
-    def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
-        return pipelines.camera_streaming_pipeline(self._fmt, profile, bitrate, self._layout)
+#     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
+#         return pipelines.camera_streaming_pipeline(self._fmt, profile, bitrate, self._layout)
 
-def make_camera(source, inference_size, loop):
-    fmt = parse_format(source)
-    if fmt:
-        return DeviceCamera(fmt, inference_size)
+# def make_camera(source, inference_size, loop):
+#     fmt = parse_format(source)
+#     if fmt:
+#         return DeviceCamera(fmt, inference_size)
 
-    filename = os.path.expanduser(source)
-    if os.path.isfile(filename):
-        return FileCamera(filename, inference_size, loop)
+#     filename = os.path.expanduser(source)
+#     if os.path.isfile(filename):
+#         return FileCamera(filename, inference_size, loop)
 
-    return None
+#     return None
