@@ -36,7 +36,7 @@ from edgetpu.detection.engine import DetectionEngine
 
 import svg
 import utils
-
+from apps import run_app
 
 CSS_STYLES = str(svg.CssStyle({'.back': svg.Style(fill='black',
                                                   stroke='black',
@@ -184,10 +184,10 @@ def render_gen(args):
             engine = next(engines)
 
 def add_render_gen_args(parser):
-    parser.add_argument('--model', required=False,
-                        help='.tflite model path', default='/home/mendel/demo_files/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite')
-    parser.add_argument('--labels', required=False,
-                        help='label file path', default='/home/mendel/demo_files/imagenet_labels.txt')
+    parser.add_argument('--model',
+                        help='.tflite model path', required=True)
+    parser.add_argument('--labels',
+                        help='labels file path')
     parser.add_argument('--top_k', type=int, default=50,
                         help='Max number of objects to detect')
     parser.add_argument('--threshold', type=float, default=0.1,
@@ -202,3 +202,9 @@ def add_render_gen_args(parser):
                         help='Bounding box display color'),
     parser.add_argument('--print', default=False, action='store_true',
                         help='Print inference results')
+
+def main():
+    run_app(add_render_gen_args, render_gen)
+
+if __name__ == '__main__':
+    main()

@@ -258,7 +258,6 @@ def run(inference_size, render_overlay, *, source, loop, display):
 
 def get_pipeline(source, inference_size, display):
     fmt = parse_format(source)
-    print(fmt)
     if fmt:
         layout = make_layout(inference_size, fmt.size)
         return layout, camera_pipeline(fmt, layout, display)
@@ -297,7 +296,7 @@ def quit():
 def run_pipeline(pipeline, layout, loop, render_overlay, display, handle_sigint=True, signals=None):
     # Create pipeline
     pipeline = describe(pipeline)
-    print(pipeline, "pipeline")
+    print(pipeline)
     pipeline = Gst.parse_launch(pipeline)
 
     # Set up a pipeline bus watch to catch errors.
