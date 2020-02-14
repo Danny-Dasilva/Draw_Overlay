@@ -73,14 +73,14 @@ def make_get_color(color, labels):
     return lambda obj_id: 'white'
 
 def overlay(title, objs, get_color, inference_time, inference_rate, layout):
-    x0, y0, width, height = layout.window
+    x0, y0, width, height = (0, 80, 640, 480)
     font_size = 0.03 * height
 
     defs = svg.Defs()
     defs += CSS_STYLES
 
     doc = svg.Svg(width=width, height=height,
-                  viewBox='%s %s %s %s' % layout.window,
+                  viewBox='%s %s %s %s' % (0, 80, 640, 480),
                   font_size=font_size, font_family='monospace', font_weight=500)
     doc += defs
 
@@ -90,8 +90,8 @@ def overlay(title, objs, get_color, inference_time, inference_rate, layout):
             caption = '%d%% %s' % (percent, obj.label)
         else:
             caption = '%d%%' % percent
-
-        x, y, w, h = obj.bbox.scale(*layout.size)
+        size = (640, 640)
+        x, y, w, h = obj.bbox.scale(*size)
         color = get_color(obj.id)
 
         doc += svg.Rect(x=x, y=y, width=w, height=h,
@@ -157,7 +157,7 @@ def render_gen(args):
     output = None
     while True:
         tensor, layout, command = (yield output)
-
+        print(tensor.shape, tensor, type(tensor[0]))
         inference_rate = next(fps_counter)
         if draw_overlay:
             start = time.monotonic()

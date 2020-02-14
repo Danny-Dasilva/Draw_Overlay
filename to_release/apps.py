@@ -50,4 +50,5 @@ def run_server(add_render_gen_args, render_gen):
             server.send_overlay(overlay if overlay else EMPTY_SVG)
         
         camera.render_overlay = render_overlay
+        print(camera.render_overlay, "print")
         signal.pause()

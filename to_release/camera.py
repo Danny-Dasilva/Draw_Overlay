@@ -17,7 +17,7 @@ import threading
 import numpy as np
 import gstreamer
 import pipelines
-
+from time import sleep
 from gst import *
 import os
 import threading
@@ -58,54 +58,36 @@ class Camera:
             
             obj.write(data)
 
-        def render_overlay(tensor, layout, command):
-
-            if self.render_overlay:
-                print("ahhhhh")
+        
                 # if(CV):
                 #     print("Camera Streaming")
                 #     t = bytes(CV) #RGB Byte Stream that can be converted to a numpy array\
                 #     print(np.frombuffer(t).shape, "tttttt")
 
-                self.render_overlay(tensor, layout, command)
+                    # self.render_overlay(tensor, layout, command)
             return None
         
         objFunc = obj.write
         AI.addListener(objFunc)
+
+        self._thread = threading.Thread(target=self.render_overlay1,)
+        self._thread.start()
+
+
         
         
-        
+    def render_overlay1(self):
+            while True:
+                if self.render_overlay:
+                    t = bytes(CV) #RGB Byte Stream that can be converted to a numpy array\
+                    tensor = np.frombuffer(bytes(CV),dtype=np.uint8)
+                    layout = None
+                    command = Non
+                    self.render_overlay(tensor, layout, command)
+                sleep(.03)
     def stop_recording(self):
         raise NotImplemented
 
     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
         raise NotImplemented
 
-# class FileCamera(Camera):
-#     def __init__(self, filename, inference_size, loop):
-#         info = gstreamer.get_video_info(filename)
-#         super().__init__((info.get_width(), info.get_height()), inference_size,
-#                           loop=loop)
-#         self._filename = filename
-
-#     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
-#         return pipelines.video_streaming_pipeline(self._filename, self._layout)
-
-# class DeviceCamera(Camera):
-#     def __init__(self, fmt, inference_size):
-#         super().__init__(fmt.size, inference_size, loop=False)
-#         self._fmt = fmt
-
-#     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
-#         return pipelines.camera_streaming_pipeline(self._fmt, profile, bitrate, self._layout)
-
-# def make_camera(source, inference_size, loop):
-#     fmt = parse_format(source)
-#     if fmt:
-#         return DeviceCamera(fmt, inference_size)
-
-#     filename = os.path.expanduser(source)
-#     if os.path.isfile(filename):
-#         return FileCamera(filename, inference_size, loop)
-
-#     return None
