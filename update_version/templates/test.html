@@ -29,25 +29,17 @@
   </section>
 
 
-  <form class="form-signin"  role="form">
-    <h2 class="form-signin-heading">Please Sign Up</h2>
-    <input type="email" id="inputUsername" name="username" class="form-control" placeholder="Email address" required autofocus>
-    <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>       
-    <button class="btn btn-lg btn-primary btn-block" type="button">Register</button>
-</form>  
-
-
 
   
 
   <div class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-        <form action="#" class="box">
+        <div class="box">
             <div class="field">
               <label for="" class="label">Password</label>
               <div class="control has-icons-left">
-                <input id="user_input" type="password" placeholder="*******" class="input" required>
+                <input id="user_input" name="password" type="password" placeholder="*******" class="input" required>
                 <span class="icon is-small is-left">
                   <i class="fa fa-lock"></i>
                 </span>
@@ -60,7 +52,7 @@
               <button onclick=showInput() class="button is-success"> Submit</button>
 
             </div>
-          </form>
+          </div>
     </div>
   </div>
   </div>
@@ -138,8 +130,16 @@ function closeModal() {
 }
 
 function showInput() {
-        t = document.getElementById("user_input").value;
-        console.log(t)
+        t = document.getElementById("user_input");
+        console.log(t.value, window.lockedSelector )
+        
+        $.ajax({
+        type: 'POST',
+        url: "/data",
+        contentType: 'application/json;charset=UTF-8',
+        data: JSON.stringify({ "password" : t.value,  "connect" : window.lockedSelector}),
+    });
+
     }
 
 const noPswd = document.querySelectorAll('a#no-modal')
@@ -148,6 +148,13 @@ for (let i = 0; i < noPswd.length; i++) {
         var str  = this.innerHTML
         //send socket here
         console.log(str)
+        $.ajax({
+        type: 'POST',
+        url: "/data",
+        contentType: 'application/json;charset=UTF-8',
+        data: JSON.stringify({ "connect" : str }),
+    });
+
     })
  }
 
@@ -161,7 +168,8 @@ const pswd = document.querySelectorAll('a#open-modal')
         var str  = this.innerHTML
         var res = str.split("<svg");
         //send socket here
-        console.log(res[0])
+        console.log(res[0], "locked")
+        window.lockedSelector = res[0]
         var modal = document.querySelector('.modal');  // assuming you have only 1
         var html = document.querySelector('html');
         modal.classList.add('is-active');
@@ -177,24 +185,6 @@ const pswd = document.querySelectorAll('a#open-modal')
 // send socket with name to check in list on name click, if value in previous network list just connect
 // case for password takew password do nmcli connect
 
-
-$(function(){
-	$('button').click(function(){
-		var user = $('#inputUsername').val();
-		var pass = $('#inputPassword').val();
-		$.ajax({
-			url: '/signUpUser',
-			data: $('form').serialize(),
-			type: 'POST',
-			success: function(response){
-				console.log(response);
-			},
-			error: function(error){
-				console.log(error);
-			}
-		});
-	});
-});
 
 
   </script>
