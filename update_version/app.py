@@ -13,8 +13,8 @@ def signUpUser():
         data = request.get_json()
 
         print(data, "data")
-    password = data['password']
-    return json.dumps({'status':'OK','pass':password})
+    
+    return json.dumps({'status':'OK'})
 
 
 if __name__ == '__main__':

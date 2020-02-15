@@ -35,7 +35,7 @@
   <div class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-        <div class="box">
+        <form class="box" onsubmit="event.preventDefault(); showInput();">
             <div class="field">
               <label for="" class="label">Password</label>
               <div class="control has-icons-left">
@@ -49,10 +49,10 @@
               
               <button onclick=closeModal()  aria-label="close" class="button">Cancel</button>
            
-              <button onclick=showInput() class="button is-success"> Submit</button>
+              <button class="button is-success"> Submit</button>
 
             </div>
-          </div>
+          </form>
     </div>
   </div>
   </div>
@@ -129,16 +129,42 @@ function closeModal() {
 
 }
 
+
+function closeAndConnect() {
+    var modal = document.querySelector('.modal');  // assuming you have only 1
+    var html = document.querySelector('html');
+    modal.classList.remove('is-active');
+    html.classList.remove('is-clipped');
+    console.log("connecting")
+
+}
+
+
+
+
 function showInput() {
         t = document.getElementById("user_input");
-        console.log(t.value, window.lockedSelector )
+        r = t.validity.valid
+        console.log(t.value.length, t)
         
-        $.ajax({
-        type: 'POST',
-        url: "/data",
-        contentType: 'application/json;charset=UTF-8',
-        data: JSON.stringify({ "password" : t.value,  "connect" : window.lockedSelector}),
-    });
+        if (r > 7) {
+          console.log(t.value, window.lockedSelector )
+          $.ajax({
+            type: 'POST',
+            url: "/data",
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({ "password" : t.value,  "connect" : window.lockedSelector}),
+        });
+
+        closeAndConnect()
+
+        } else {
+          t.setCustomValidity("Bad password")
+          
+        }
+        
+
+        
 
     }
 
@@ -184,6 +210,7 @@ const pswd = document.querySelectorAll('a#open-modal')
  }
 // send socket with name to check in list on name click, if value in previous network list just connect
 // case for password takew password do nmcli connect
+
 
 
 
