@@ -15,3 +15,25 @@ reader = csv.DictReader(stdout.decode('utf-8').splitlines(),
 for row in reader:
     if row['SSID'] != '--':
         print(row['SSID'], row['MODE'],row['CHAN'], row['RATENUM'], row['RATE'], row['SIGNAL'], row['BARS'], row['SECURITY'])
+
+
+
+# # os.system('nmcli ddevice wifi connect my_wifi password <password>')
+
+#  nmcli d up <name>
+
+
+def search():
+    pass
+
+def read_network_list():
+    pass
+def save_network_list():
+    pass
+def read_network():
+    #nmcli d
+    pass
+def ask_password():
+    #socket promt for password
+    pass
+

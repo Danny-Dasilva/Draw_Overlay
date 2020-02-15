@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../static/css/bulma.css">
     <!-- <link rel="stylesheet" href="static/css/bulma.css"> -->
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
   <body>
   <section class="section">
@@ -26,6 +27,16 @@
         </div>
       </div>
   </section>
+
+
+  <form class="form-signin"  role="form">
+    <h2 class="form-signin-heading">Please Sign Up</h2>
+    <input type="email" id="inputUsername" name="username" class="form-control" placeholder="Email address" required autofocus>
+    <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>       
+    <button class="btn btn-lg btn-primary btn-block" type="button">Register</button>
+</form>  
+
+
 
   
 
@@ -163,10 +174,27 @@ const pswd = document.querySelectorAll('a#open-modal')
     });
  })
  }
- 
 // send socket with name to check in list on name click, if value in previous network list just connect
 // case for password takew password do nmcli connect
 
+
+$(function(){
+	$('button').click(function(){
+		var user = $('#inputUsername').val();
+		var pass = $('#inputPassword').val();
+		$.ajax({
+			url: '/signUpUser',
+			data: $('form').serialize(),
+			type: 'POST',
+			success: function(response){
+				console.log(response);
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+	});
+});
 
 
   </script>
