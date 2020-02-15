@@ -16,13 +16,13 @@ def search_wifi():
                                         'SIGNAL', 'BARS', 'SECURITY'])
 
     wifi_list = {}
-    connected = {False, False}
+    connected = {'connection' : False}
     for row in reader:
         if row['SSID'] != '--':
             
             if row['SSID'] == '*':
                 print("connected to ", row['MODE'])
-                connected = {True : row['MODE']}
+                connected = {'connection' : row['MODE']}
             else:
                 ssid = row['SSID']
                 security = row['SECURITY']
@@ -46,7 +46,7 @@ def search_connected():
                                         'TYPE', 'DEVICE',])
 
     wifi_list = {}
-    connected = {False, False}
+    connected = {'connection' : False}
     for row in reader:
         if row ['TYPE'] == 'wifi':
             uuid = row['UUID']
@@ -59,13 +59,24 @@ def search_connected():
 def disconnect(wifi_name):
     os.system(f'nmcli con down id {wifi_name}')
 
+def request_password():
+    # send a socket requesting a password
+    return False
 
 def connect(name, password=None):
     if password == None:
-        try:
-            os.system(f'nmcli d up {name}')
-        except:
-            print("wrror")
+    
+        process = subprocess.Popen(['nmcli', 'c', 'up', name], stdout=subprocess.PIPE)
+        
+        stdout, stderr = process.communicate()
+        read = stdout.decode('utf-8')
+        print(read)
+        if len(read) == 0:
+            return request_password()
+        return True
+    else:
+        os.system(f'nmcli device wifi connect {name} password {password}')
+
 def search():
     pass
 
@@ -80,6 +91,16 @@ def ask_password():
     #socket promt for password
     pass
 
-connect, wifi_list = search_wifi()
-print(connect, wifi_list)
+connection, wifi_list = search_wifi()
+print(connection, wifi_list)
+if connection['connection'] == False:
+    wifi = next(iter(wifi_list))
+    print(wifi, "no connect")
+    val = connect(str(wifi))
+    if val == False:
+        connect(str(wifi), 'orangejet')
+else:
+    wifi = next(iter(wifi_list))
+    print("connedcted")
+    disconnect(wifi)
 # disconnect(connect[True])
