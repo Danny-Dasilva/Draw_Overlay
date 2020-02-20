@@ -72,13 +72,8 @@
   <script>
 
 
-var connections = [
-    { SSID: "xfinitywifi", SECURITY: "WPA2", SIGNAL: "20" },
-    { SSID: "Phone", SECURITY: "WPA2", SIGNAL: "100" },
-    { SSID: "My Wifi", SECURITY: "WPA2", SIGNAL: "30" },
-    { SSID: "Zip", SECURITY: "--", SIGNAL: "40" },
-    { SSID: "Comments", SECURITY: "--", SIGNAL: "50" }
-];
+var connections = { "Dasilva-Wifi": "WPA2", "ATTUMTu3Ys_2.4": "WPA2", "SKYNETgear-2.4": "WPA2", Spider: "WPA2", xfinitywifi: "--" }
+
 
 
 function reloadConnections() { 
@@ -91,33 +86,33 @@ function reloadConnections() {
         });
 
   $.getJSON('/static/connections.json', function (data) {
-  console.log(data, "connections")
+
   });
 
 }
 function rebootDevice() {
 
 }
-for (var i = 0; i < connections.length; i += 1) {
-    console.log(connections[i].SSID)
-    const div = document.createElement('a');
-    div.className = 'dropdown-item';
+for (let [key, value] of Object.entries(connections)) {
+    console.log(key, value)
+    // const div = document.createElement('a');
+    // div.className = 'dropdown-item';
 
     
-    switch (connections[i].SECURITY) {
-        case 'WPA2':
-            div.id = 'open-modal';
+    // switch (connections[i].SECURITY) {
+    //     case 'WPA2':
+    //         div.id = 'open-modal';
 
-            div.innerHTML = `${ connections[i].SSID} <i class="fas fa-lock is-pulled-right"> </i> `;
-            document.getElementById('dropdown-content').appendChild(div);
-        break;
-        default:
-            div.id = 'no-modal';
-            div.innerHTML = `${ connections[i].SSID} `;
-            document.getElementById('dropdown-content').appendChild(div);
+    //         div.innerHTML = `${ connections[i].SSID} <i class="fas fa-lock is-pulled-right"> </i> `;
+    //         document.getElementById('dropdown-content').appendChild(div);
+    //     break;
+    //     default:
+    //         div.id = 'no-modal';
+    //         div.innerHTML = `${ connections[i].SSID} `;
+    //         document.getElementById('dropdown-content').appendChild(div);
 
 
-    }
+    // }
 
 }
 

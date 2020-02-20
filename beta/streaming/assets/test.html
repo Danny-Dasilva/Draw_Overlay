@@ -90,7 +90,7 @@ function reloadConnections() {
             data: JSON.stringify({ "hello" : "test"}),
         });
 
-  $.getJSON('/static/connections.json', function (data) {
+  $.getJSON('/json/connections.json', function (data) {
   console.log(data, "connections")
   });
 

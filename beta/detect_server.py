@@ -28,7 +28,7 @@ python3 -m edgetpuvision.detect_server \
 
 from apps import run_server
 from detect import add_render_gen_args, render_gen
-
+from time import sleep
 def main():
     run_server(add_render_gen_args, render_gen)
 

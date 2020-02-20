@@ -12,6 +12,8 @@ import subprocess
 import sys
 import threading
 import time
+from .helpers.wifi import search_wifi
+from .helpers.read_and_write import write_json
 
 from enum import Enum
 from http.server import BaseHTTPRequestHandler
@@ -688,6 +690,16 @@ class WsProtoClient(ProtoClient):
             self._queue_message(_http_switching_protocols(sec_websocket_key))
             self._logger.info('Upgraded to WebSocket')
             return False
+        if request.command == 'POST':
+
+            
+            if request.path == '/getConnections':
+                connection, wifi_list = search_wifi()
+                write_json('connections', wifi_list)
+                write_json('connected', connection)
+            return True
+
+
 
         if request.command == 'GET':
             content, content_type = _read_asset(request.path)
