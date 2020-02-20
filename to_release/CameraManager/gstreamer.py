@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+# /etc/sudoers.d/local.tmp
+#Defaults env_keep += "DISPLAY XAUTHORITY XDG_RUNTIME_DIR"
 import collections
 import contextlib
 import enum
