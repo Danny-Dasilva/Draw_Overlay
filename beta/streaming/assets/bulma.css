@@ -11612,3 +11612,7 @@ print {
   z-index: 1000;
   padding: 1px;
 }
+
+.lightGreen {
+  background: lightgreen;
+}

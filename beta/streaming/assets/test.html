@@ -74,7 +74,9 @@
 
 var connections = { "Dasilva-Wifi": "WPA2", "ATTUMTu3Ys_2.4": "WPA2", "SKYNETgear-2.4": "WPA2", Spider: "WPA2", xfinitywifi: "--" }
 
+fillConnections(data)
 
+updateListener()
 
 function reloadConnections() { 
   console.log("reload connections")
@@ -88,6 +90,27 @@ function reloadConnections() {
   $.getJSON('/json/connections.json', function (data) {
     fillConnections(data)
   });
+
+  $.getJSON('/json/connected.json', function (data) {
+    var connection = data.connection
+    const pswd = document.querySelectorAll('a')
+
+      for (let i = 0; i < pswd.length; i++) {
+
+        var str  = pswd[i].innerHTML
+        var res = str.split("<svg");
+      
+        console.log(res[0].length, connection.length, "wtf")
+        if (res[0] === connection) {
+          pswd[i].classList.add('lightGreen');
+          
+
+        }
+      };
+  });
+
+  updateListener()
+
 
 }
 function rebootDevice() {
@@ -105,7 +128,7 @@ function fillConnections(connections) {
         case 'WPA2':
             div.id = 'open-modal';
 
-            div.innerHTML = `${ SSID} <i class="fas fa-lock is-pulled-right"> </i> `;
+            div.innerHTML = `${ SSID}<i class="fas fa-lock is-pulled-right"> </i> `;
             document.getElementById('dropdown-content').appendChild(div);
         break;
         default:
@@ -172,7 +195,7 @@ function showInput() {
           console.log(t.value, window.lockedSelector )
           $.ajax({
             type: 'POST',
-            url: "/data",
+            url: "/password",
             contentType: 'application/json;charset=UTF-8',
             data: JSON.stringify({ "password" : t.value,  "connect" : window.lockedSelector}),
         });
@@ -197,7 +220,7 @@ for (let i = 0; i < noPswd.length; i++) {
         console.log(str)
         $.ajax({
         type: 'POST',
-        url: "/data",
+        url: "/connect",
         contentType: 'application/json;charset=UTF-8',
         data: JSON.stringify({ "connect" : str }),
     });
@@ -207,6 +230,8 @@ for (let i = 0; i < noPswd.length; i++) {
 
 
  //add in case and use same id later
+function updateListener() {
+  console.log("in func")
 
 const pswd = document.querySelectorAll('a#open-modal')
 
@@ -229,6 +254,9 @@ const pswd = document.querySelectorAll('a#open-modal')
     });
  })
  }
+
+
+}
 // send socket with name to check in list on name click, if value in previous network list just connect
 // case for password takew password do nmcli connect
 
