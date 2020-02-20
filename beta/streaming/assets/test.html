@@ -94,6 +94,7 @@ function rebootDevice() {
 
 }
 function fillConnections(connections) {
+  document.getElementById('dropdown-content').innerHTML = '<button class="button" onclick=reloadConnections()>Reload</button>';
   for (let [SSID, Security] of Object.entries(connections)) {
     
     const div = document.createElement('a');
