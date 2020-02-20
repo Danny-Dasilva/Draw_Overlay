@@ -33,7 +33,7 @@
 
   
 
-  <div class="modal">
+  <div id="passwordModal" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
         <form class="box" onsubmit="event.preventDefault(); showInput();">
@@ -51,6 +51,31 @@
               <button onclick=closeModal()  aria-label="close" class="button">Cancel</button>
            
               <button class="button is-success"> Submit</button>
+
+            </div>
+          </form>
+    </div>
+  </div>
+  </div>
+
+
+
+  <div id="disconnectModal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <form class="box" onsubmit="event.preventDefault(); sendDisconnect();">
+            <div class="field">
+              <label for="" class="label">Disconnect Wifi</label>
+              <div class="control has-icons-left">
+              <p>Are you sure you want to Disconnect?</p>
+                
+              </div>
+            </div>
+            <div class="field">
+              
+              <button onclick=closeModal()  aria-label="close" class="button">Cancel</button>
+           
+              <button class="button is-danger"> Yes</button>
 
             </div>
           </form>
@@ -87,26 +112,13 @@ function reloadConnections() {
   $.getJSON('/json/connections.json', function (data) {
     fillConnections(data)
   });
-
+  var connection;
   $.getJSON('/json/connected.json', function (data) {
-    var connection = data.connection
-    const pswd = document.querySelectorAll('a')
-
-      for (let i = 0; i < pswd.length; i++) {
-
-        var str  = pswd[i].innerHTML
-        var res = str.split("<svg");
-      
-        console.log(res[0].length, connection.length, "wtf")
-        if (res[0] === connection) {
-          pswd[i].classList.add('lightGreen');
-          
-
-        }
-      };
+    let connection = data.connection
+    console.log(connection)
   });
-
-
+  console.log(connection)
+  console.log(connection)
 
 }
 function rebootDevice() {
@@ -131,7 +143,7 @@ function fillConnections(connections) {
                     //send socket here to check for pwsd
                     console.log(SSID, "locked")
                     window.lockedSelector = SSID
-                    var modal = document.querySelector('.modal');  // assuming you have only 1
+                    var modal = document.querySelector('#passwordModal');  // assuming you have only 1
                     var html = document.querySelector('html');
                     modal.classList.add('is-active');
                     html.classList.add('is-clipped');
@@ -241,23 +253,9 @@ function showInput() {
 
     }
 
-// const noPswd = document.querySelectorAll('a#no-modal')
-// for (let i = 0; i < noPswd.length; i++) {
-//     noPswd[i].addEventListener('click', function(event) {
-//         var str  = this.innerHTML
-//         //send socket here
-//         console.log(str)
-//         $.ajax({
-//         type: 'POST',
-//         url: "/connect",
-//         contentType: 'application/json;charset=UTF-8',
-//         data: JSON.stringify({ "connect" : str }),
-//     });
-
-//     })
-//  }
-
-
+  function sendDisconnect(data) {
+    console.log(data, lockedSelector)
+  }
 
 // send socket with name to check in list on name click, if value in previous network list just connect
 // case for password takew password do nmcli connect
