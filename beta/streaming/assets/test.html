@@ -72,11 +72,8 @@
   <script>
 
 
-var connections = { "Dasilva-Wifi": "WPA2", "ATTUMTu3Ys_2.4": "WPA2", "SKYNETgear-2.4": "WPA2", Spider: "WPA2", xfinitywifi: "--" }
+var connections = { "Dasilva-Wifi": "WPA2", "ATTUMTu3Ys_2.4": "WPA2", "SKYNETgear-2.4": "WPA2", Spider: "WPA2", xfinitywifi: "--", "33333-Wifi": "WPA2", "2222-Wifi": "WPA2","qweewqe-Wifi": "WPA2","eeeeee-Wifi": "WPA2",}
 
-fillConnections(data)
-
-updateListener()
 
 function reloadConnections() { 
   console.log("reload connections")
@@ -109,7 +106,6 @@ function reloadConnections() {
       };
   });
 
-  updateListener()
 
 
 }
@@ -129,11 +125,44 @@ function fillConnections(connections) {
             div.id = 'open-modal';
 
             div.innerHTML = `${ SSID}<i class="fas fa-lock is-pulled-right"> </i> `;
+
+            div.addEventListener('click', function(event) {
+                   
+                    //send socket here to check for pwsd
+                    console.log(SSID, "locked")
+                    window.lockedSelector = SSID
+                    var modal = document.querySelector('.modal');  // assuming you have only 1
+                    var html = document.querySelector('html');
+                    modal.classList.add('is-active');
+                    html.classList.add('is-clipped');
+                    
+                    modal.querySelector('.modal-background').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    modal.classList.remove('is-active');
+                    html.classList.remove('is-clipped');
+                });
+            })
+
             document.getElementById('dropdown-content').appendChild(div);
+
+
         break;
         default:
             div.id = 'no-modal';
             div.innerHTML = `${ SSID} `;
+
+            div.addEventListener('click', function(event) {
+                var str  = this.innerHTML
+                //send socket here
+                console.log(str)
+                $.ajax({
+                type: 'POST',
+                url: "/connect",
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({ "connect" : str }),
+            });
+
+            })
             document.getElementById('dropdown-content').appendChild(div);
 
 
@@ -212,51 +241,24 @@ function showInput() {
 
     }
 
-const noPswd = document.querySelectorAll('a#no-modal')
-for (let i = 0; i < noPswd.length; i++) {
-    noPswd[i].addEventListener('click', function(event) {
-        var str  = this.innerHTML
-        //send socket here
-        console.log(str)
-        $.ajax({
-        type: 'POST',
-        url: "/connect",
-        contentType: 'application/json;charset=UTF-8',
-        data: JSON.stringify({ "connect" : str }),
-    });
+// const noPswd = document.querySelectorAll('a#no-modal')
+// for (let i = 0; i < noPswd.length; i++) {
+//     noPswd[i].addEventListener('click', function(event) {
+//         var str  = this.innerHTML
+//         //send socket here
+//         console.log(str)
+//         $.ajax({
+//         type: 'POST',
+//         url: "/connect",
+//         contentType: 'application/json;charset=UTF-8',
+//         data: JSON.stringify({ "connect" : str }),
+//     });
 
-    })
- }
-
-
- //add in case and use same id later
-function updateListener() {
-  console.log("in func")
-
-const pswd = document.querySelectorAll('a#open-modal')
-
- for (let i = 0; i < pswd.length; i++) {
-    pswd[i].addEventListener('click', function(event) {
-        var str  = this.innerHTML
-        var res = str.split("<svg");
-        //send socket here
-        console.log(res[0], "locked")
-        window.lockedSelector = res[0]
-        var modal = document.querySelector('.modal');  // assuming you have only 1
-        var html = document.querySelector('html');
-        modal.classList.add('is-active');
-        html.classList.add('is-clipped');
-        
-        modal.querySelector('.modal-background').addEventListener('click', function(e) {
-        e.preventDefault();
-        modal.classList.remove('is-active');
-        html.classList.remove('is-clipped');
-    });
- })
- }
+//     })
+//  }
 
 
-}
+
 // send socket with name to check in list on name click, if value in previous network list just connect
 // case for password takew password do nmcli connect
 
