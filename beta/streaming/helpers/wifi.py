@@ -1,6 +1,6 @@
 import subprocess
 import csv
-from .read_and_write import write_json
+from read_and_write import write_json
 import os
 
 def search_wifi():
@@ -16,19 +16,23 @@ def search_wifi():
                                         'SIGNAL', 'BARS', 'SECURITY'])
 
     wifi_list = {}
-    connected = {'connection' : False}
+    connected = None
     for row in reader:
         if row['SSID'] != '--':
             
             if row['SSID'] == '*':
                 print("connected to ", row['MODE'])
-                connected = {'connection' : row['MODE']}
+                connected = row['MODE']
+                
             else:
                 ssid = row['SSID']
                 security = row['SECURITY']
-                wifi_list[ssid] = security
+                wifi_list[ssid] = {'security': security, 'connected': 0}
     del wifi_list['IN-USE']
-    return connected, wifi_list
+
+    if connected:
+        wifi_list[connected]['connected'] = 1
+    return wifi_list
 # # os.system('nmcli ddevice wifi connect my_wifi password <password>')
 
 
@@ -92,10 +96,9 @@ def ask_password():
     pass
 
 if __name__ == '__main__':
-    connection, wifi_list = search_wifi()
+    wifi_list = search_wifi()
     write_json('connections', wifi_list)
-    write_json('connected', connection)
-    print(connection, wifi_list)
+    print(wifi_list)
     # if connection['connection'] == False:
     #     wifi = next(iter(wifi_list))
     #     print(wifi, "no connect")
