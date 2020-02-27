@@ -694,9 +694,9 @@ class WsProtoClient(ProtoClient):
 
             
             if request.path == '/getConnections':
-                connection, wifi_list = search_wifi()
+                wifi_list = search_wifi()
                 write_json('connections', wifi_list)
-                write_json('connected', connection)
+                
             return True
 
 

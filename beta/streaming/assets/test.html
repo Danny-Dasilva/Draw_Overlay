@@ -112,13 +112,7 @@ function reloadConnections() {
   $.getJSON('/json/connections.json', function (data) {
     fillConnections(data)
   });
-  var connection;
-  $.getJSON('/json/connected.json', function (data) {
-    let connection = data.connection
-    console.log(connection)
-  });
-  console.log(connection)
-  console.log(connection)
+ 
 
 }
 function rebootDevice() {
@@ -146,6 +140,33 @@ function fillConnections(connections) {
                     var modal = document.querySelector('#passwordModal');  // assuming you have only 1
                     var html = document.querySelector('html');
                     modal.classList.add('is-active');
+                    html.classList.add('is-clipped');
+                    
+                    modal.querySelector('.modal-background').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    modal.classList.remove('is-active');
+                    html.classList.remove('is-clipped');
+                });
+            })
+
+            document.getElementById('dropdown-content').appendChild(div);
+
+
+        break;
+        case 'connected':
+            div.id = 'open-modal';
+
+            div.innerHTML = `${ SSID}<i class="fas fa-lock is-pulled-right"> </i> `;
+            div.classList.add('lightGreen')
+            div.addEventListener('click', function(event) {
+                   
+                    //send socket here to check for pwsd
+                    console.log(SSID, "locked")
+                    window.lockedSelector = SSID
+                    var modal = document.querySelector('#disconnectModal');  // assuming you have only 1
+                    var html = document.querySelector('html');
+                    modal.classList.add('is-active');
+                    
                     html.classList.add('is-clipped');
                     
                     modal.querySelector('.modal-background').addEventListener('click', function(e) {
@@ -206,7 +227,8 @@ function dropdown() {
 
 
 function closeModal() {
-    var modal = document.querySelector('.modal');  // assuming you have only 1
+  console.log("close modal")
+    var modal = document.querySelector('#passwordModal');   // assuming you have only 1
     var html = document.querySelector('html');
     modal.classList.remove('is-active');
     html.classList.remove('is-clipped');
@@ -253,8 +275,8 @@ function showInput() {
 
     }
 
-  function sendDisconnect(data) {
-    console.log(data, lockedSelector)
+  function sendDisconnect() {
+    console.log(lockedSelector)
   }
 
 // send socket with name to check in list on name click, if value in previous network list just connect

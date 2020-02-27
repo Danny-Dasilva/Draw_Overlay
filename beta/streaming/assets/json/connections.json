@@ -1,1 +1,1 @@
-{"ATTUMTu3Ys_2.4": {"security": "WPA2", "connected": 0}, "Dasilva-Wifi": {"security": "WPA2", "connected": 1}, "Spider": {"security": "WPA2", "connected": 0}, "DIRECT-LK-FireTV_2987": {"security": "WPA2", "connected": 0}, "xfinitywifi": {"security": "--", "connected": 0}, "2gruss": {"security": "WPA1", "connected": 0}}
+{"ATTUMTu3Ys_2.4": "WPA2", "Dasilva-Wifi": "connected", "DIRECT-LK-FireTV_2987": "WPA2", "Spider": "WPA2", "xfinitywifi": "--", "lmoura": "WPA2", "2gruss": "WPA1"}
