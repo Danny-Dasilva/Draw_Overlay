@@ -40,7 +40,7 @@
             <div class="field">
               <label for="" class="label">Password</label>
               <div class="control has-icons-left">
-                <input id="user_input" name="password" type="password" placeholder="*******" class="input" required>
+                <input id="user_input" name="password" type="password"  pattern=".{8,}"   required title="8 characters minimum" placeholder="*******" class="input">
                 <span class="icon is-small is-left">
                   <i class="fa fa-lock"></i>
                 </span>
@@ -48,7 +48,7 @@
             </div>
             <div class="field">
               
-              <button onclick=closeModal()  aria-label="close" class="button">Cancel</button>
+              <button onclick=closeModal()  aria-label="close" class="button ">Cancel</button>
            
               <button class="button is-success"> Submit</button>
 
@@ -73,7 +73,7 @@
             </div>
             <div class="field">
               
-              <button onclick=closeModal()  aria-label="close" class="button">Cancel</button>
+              <button onclick=closeDisconnectModal()  aria-label="close" class="button">Cancel</button>
            
               <button class="button is-danger"> Yes</button>
 
@@ -115,9 +115,11 @@ function reloadConnections() {
  
 
 }
+
 function rebootDevice() {
 
 }
+
 function fillConnections(connections) {
   document.getElementById('dropdown-content').innerHTML = '<button class="button" onclick=reloadConnections()>Reload</button>';
   for (let [SSID, Security] of Object.entries(connections)) {
@@ -143,9 +145,9 @@ function fillConnections(connections) {
                     html.classList.add('is-clipped');
                     
                     modal.querySelector('.modal-background').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    modal.classList.remove('is-active');
-                    html.classList.remove('is-clipped');
+                      e.preventDefault();
+                      modal.classList.remove('is-active');
+                      html.classList.remove('is-clipped');
                 });
             })
 
@@ -156,7 +158,8 @@ function fillConnections(connections) {
         case 'connected':
             div.id = 'open-modal';
 
-            div.innerHTML = `${ SSID}<i class="fas fa-lock is-pulled-right"> </i> `;
+            div.innerHTML = `${ SSID} `
+            ;
             div.classList.add('lightGreen')
             div.addEventListener('click', function(event) {
                    
@@ -170,9 +173,9 @@ function fillConnections(connections) {
                     html.classList.add('is-clipped');
                     
                     modal.querySelector('.modal-background').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    modal.classList.remove('is-active');
-                    html.classList.remove('is-clipped');
+                      e.preventDefault();
+                      modal.classList.remove('is-active');
+                      html.classList.remove('is-clipped');
                 });
             })
 
@@ -228,17 +231,32 @@ function dropdown() {
 
 function closeModal() {
   console.log("close modal")
-    var modal = document.querySelector('#passwordModal');   // assuming you have only 1
-    var html = document.querySelector('html');
+    var modal = document.querySelector('#disconnectModal');   // assuming you have only 1
+    console.log(modal)
+    // var html = document.querySelector('html');
     modal.classList.remove('is-active');
-    html.classList.remove('is-clipped');
+    // html.classList.remove('is-clipped');
 
 
 }
 
+function closeDisconnectModal() {
+    var modal = document.querySelector('#disconnectModal');   // assuming you have only 1
+    var html = document.querySelector('html');
+    modal.classList.remove('is-active');
+    html.classList.remove('is-clipped');
+}
+
+function closeModal() {
+    var modal = document.querySelector('#passwordModal');   // assuming you have only 1
+    var html = document.querySelector('html');
+    modal.classList.remove('is-active');
+    html.classList.remove('is-clipped');
+}
+
 
 function closeAndConnect() {
-    var modal = document.querySelector('.modal');  // assuming you have only 1
+    var modal = document.querySelector('#passwordModal');  // assuming you have only 1
     var html = document.querySelector('html');
     modal.classList.remove('is-active');
     html.classList.remove('is-clipped');
@@ -251,33 +269,21 @@ function closeAndConnect() {
 
 function showInput() {
         t = document.getElementById("user_input");
-        r = t.validity.valid
-        console.log(t.value.length, t)
-        
-        if (r > 7) {
-          console.log(t.value, window.lockedSelector )
-          $.ajax({
-            type: 'POST',
-            url: "/password",
-            contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify({ "password" : t.value,  "connect" : window.lockedSelector}),
-        });
+        console.log(t.value, window.lockedSelector, "valueeee")
+          // $.ajax({
+          //   type: 'POST',
+          //   url: "/password",
+          //   contentType: 'application/json;charset=UTF-8',
+          //   data: JSON.stringify({ "password" : t.value,  "connect" : window.lockedSelector}),
+        // });
 
         closeAndConnect()
 
-        } else {
-          t.setCustomValidity("Bad password")
-          
-        }
-        
-
-        
-
     }
 
-  function sendDisconnect() {
-    console.log(lockedSelector)
-  }
+function sendDisconnect() {
+  console.log(lockedSelector, "disconnect")
+}
 
 // send socket with name to check in list on name click, if value in previous network list just connect
 // case for password takew password do nmcli connect

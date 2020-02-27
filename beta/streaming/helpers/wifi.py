@@ -32,11 +32,14 @@ def search_wifi():
 
     if connected:
         wifi_list[connected] = 'connected'
+        write_previous_connections(connected)
     return wifi_list
 # # os.system('nmcli ddevice wifi connect my_wifi password <password>')
 
 
 
+def write_previous_connections(SSID):
+    pass
 
 def search_connected():
     process = subprocess.Popen(['nmcli', 'd'], stdout=subprocess.PIPE)
