@@ -40,8 +40,11 @@ def search_wifi():
 
 def write_previous_connections(SSID):
     ssids = read_json('previous')
-    print(ssids, "SSIDS")
-    # write_json('previous', SSID)
+    if SSID not in ssids:
+
+        ssids.append(SSID)
+    
+    write_json('previous', ssids)
 
 
 def search_connected():
