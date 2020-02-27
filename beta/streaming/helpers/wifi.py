@@ -1,6 +1,6 @@
 import subprocess
 import csv
-from .read_and_write import write_json
+from read_and_write import write_json, read_json
 import os
 
 def search_wifi():
@@ -39,7 +39,10 @@ def search_wifi():
 
 
 def write_previous_connections(SSID):
-    pass
+    ssids = read_json('previous')
+    print(ssids, "SSIDS")
+    # write_json('previous', SSID)
+
 
 def search_connected():
     process = subprocess.Popen(['nmcli', 'd'], stdout=subprocess.PIPE)

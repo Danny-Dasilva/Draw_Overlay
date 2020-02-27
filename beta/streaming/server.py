@@ -692,7 +692,10 @@ class WsProtoClient(ProtoClient):
             return False
         if request.command == 'POST':
 
-            
+            if request.path == '/disconnect':
+                path = request.headers['Authority']
+                
+
             if request.path == '/getConnections':
                 wifi_list = search_wifi()
                 write_json('connections', wifi_list)

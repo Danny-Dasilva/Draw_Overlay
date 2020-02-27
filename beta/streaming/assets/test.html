@@ -283,6 +283,17 @@ function showInput() {
 
 function sendDisconnect() {
   console.log(lockedSelector, "disconnect")
+  $.ajax({
+    type: 'POST',
+    beforeSend: function(request) {
+      request.setRequestHeader("Authority", JSON.stringify(lockedSelector));
+    },
+
+    url: "/disconnect",
+    contentType: 'application/json;charset=UTF-8',
+    data: "test",
+  });
+
 }
 
 // send socket with name to check in list on name click, if value in previous network list just connect
