@@ -1,6 +1,6 @@
 import subprocess
 import csv
-from read_and_write import write_json, read_json
+from .read_and_write import write_json, read_json
 import os
 
 def search_wifi():

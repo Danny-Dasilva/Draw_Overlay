@@ -183,11 +183,11 @@ def render_gen(args):
             engine = next(engines)
 
 def add_render_gen_args(parser):
-    parser.add_argument('--model',
-                        help='.tflite model path', required=True)
-    parser.add_argument('--labels',
-                        help='labels file path')
-    parser.add_argument('--top_k', type=int, default=50,
+    parser.add_argument('--model', required=False,
+                        help='.tflite model path', default='/home/mendel/demo_files/mobilenet_v2_edgetpu_red.tflite')
+    parser.add_argument('--labels', required=False,
+                        help='label file path', default='/home/mendel/demo_files/imagenet_labels.txt')
+    parser.add_argument('--top_k', type=int, default=10,
                         help='Max number of objects to detect')
     parser.add_argument('--threshold', type=float, default=0.1,
                         help='Detection threshold')

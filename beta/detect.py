@@ -185,7 +185,7 @@ def render_gen(args):
 
 def add_render_gen_args(parser):
     parser.add_argument('--model', required=False,
-                        help='.tflite model path', default='/home/mendel/demo_files/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite')
+                        help='.tflite model path', default='/home/mendel/demo_files/mobilenet_v2_edgetpu_red.tflite')
     parser.add_argument('--labels', required=False,
                         help='label file path', default='/home/mendel/demo_files/imagenet_labels.txt')
     parser.add_argument('--top_k', type=int, default=50,
