@@ -21,20 +21,7 @@ import threading
 from time import sleep
 from CameraManager.TPUCameraManager import CameraManager, GStreamerPipelines
 import numpy as np
-camMan = CameraManager() #Creates new camera manager object
 
-CSICam = camMan.newCam(0)
-#
-H264 = CSICam.addPipeline(GStreamerPipelines.H264,(640,480),30,"h264sink")
-AI = CSICam.addPipeline(GStreamerPipelines.RGB,(320, 320),30,"AI")
-
-CSICam.startPipeline() 
-if os.path.exists('/dev/video1'):
-    USBCam = camMan.newCam(1) #Creates new RGB CSI-camera
-    SB = USBCam.addPipeline(GStreamerPipelines.H264,(640,480),30,"usb_cam") #Creates an RGB stream at 30 fps and 640x480 for openCV
-    USBCam.startPipeline()
-else:
-    USBCam = None
 class Camera:
     def __init__(self, model_res):
         #def __init__(self, render_size, inference_size, loop):
@@ -43,6 +30,21 @@ class Camera:
         self.model_res = model_res
         self._thread = None
         self.render_overlay = None
+        camMan = CameraManager() #Creates new camera manager object
+
+        CSICam = camMan.newCam(0)
+        #
+        self.H264 = CSICam.addPipeline(GStreamerPipelines.H264,(640,480),30,"h264sink")
+        self.AI = CSICam.addPipeline(GStreamerPipelines.RGB,(300, 300),30,"AI")
+
+        CSICam.startPipeline() 
+        if os.path.exists('/dev/video1'):
+            self.USBCam = camMan.newCam(1) #Creates new RGB CSI-camera
+            self.SB = USBCam.addPipeline(GStreamerPipelines.H264,(640,480),30,"usb_cam") #Creates an RGB stream at 30 fps and 640x480 for openCV
+            self.USBCam.startPipeline()
+        else:
+            self.USBCam = None
+            
 
     @property
     def resolution(self):
@@ -55,12 +57,12 @@ class Camera:
         #Start gstreamer Streams
         
         objFunc = obj.write
-        H264.addListener(objFunc)
+        self.H264.addListener(objFunc)
 
-        if USBCam is not None:
+        if self.USBCam is not None:
 
             objFunc = obj.write_usb
-            SB.addListener(objFunc)
+            self.SB.addListener(objFunc)
 
 
 
