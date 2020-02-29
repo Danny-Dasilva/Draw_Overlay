@@ -270,12 +270,16 @@ function closeAndConnect() {
 function showInput() {
         t = document.getElementById("user_input");
         console.log(t.value, window.lockedSelector, "valueeee")
-          // $.ajax({
-          //   type: 'POST',
-          //   url: "/password",
-          //   contentType: 'application/json;charset=UTF-8',
-          //   data: JSON.stringify({ "password" : t.value,  "connect" : window.lockedSelector}),
-        // });
+        $.ajax({
+          type: 'POST',
+          beforeSend: function(request) {
+            request.setRequestHeader("Authority", JSON.stringify(lockedSelector));
+          },
+
+          url: "/connect",
+          contentType: 'application/json;charset=UTF-8',
+          data: "test",
+        });
 
         closeAndConnect()
 

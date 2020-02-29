@@ -20,3 +20,5 @@ def json_parse(data):
     data = json.dumps(data)
     data = json.loads(data)
     return(data)
+if __name__ == '__main__':
+    print(read_json('previous'))

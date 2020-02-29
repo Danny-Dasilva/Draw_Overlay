@@ -76,20 +76,27 @@ def request_password():
     # send a socket requesting a password
     return False
 
-def connect(name, password=None):
-    if password == None:
-    
-        process = subprocess.Popen(['nmcli', 'c', 'up', name], stdout=subprocess.PIPE)
-        
-        stdout, stderr = process.communicate()
-        read = stdout.decode('utf-8')
-        print(read)
-        if len(read) == 0:
-            return request_password()
-        return True
+def connect_wifi(name, password=None):
+
+    previous =  read_json('previous')
+    print(previous, "previous")
+   
+    if name in previous:
+         os.system(f'nmcli c up {name}')
     else:
         os.system(f'nmcli device wifi connect {name} password {password}')
 
+    # if password == None:
+    
+    #     process = subprocess.Popen(['nmcli', 'c', 'up', name], stdout=subprocess.PIPE)
+        
+    #     stdout, stderr = process.communicate()
+    #     read = stdout.decode('utf-8')
+    #     print(read)
+    #     if len(read) == 0:
+    #         return request_password()
+    #     return True
+    # 
 def search():
     pass
 

@@ -12,7 +12,7 @@ import subprocess
 import sys
 import threading
 import time
-from .helpers.wifi import search_wifi, disconnect
+from .helpers.wifi import search_wifi, disconnect, connect_wifi
 from .helpers.read_and_write import write_json
 
 from enum import Enum
@@ -696,6 +696,11 @@ class WsProtoClient(ProtoClient):
                 path = request.headers['Authority']
                 print(path, "disconnect")
                 disconnect(path)
+
+            if request.path == '/connect':
+                path = request.headers['Authority']
+                print(eval(path), "connect")
+                connect_wifi(eval(path))
 
             if request.path == '/getConnections':
                 wifi_list = search_wifi()
