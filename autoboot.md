@@ -24,7 +24,7 @@ WantedBy=multi-user.target
 
 ### 2) mv the file /lib/systemd/system/detects.service
 
-```$ sudo mv detects.service /lib/systemd/system/detects.service```
+$ ```sudo mv detects.service /lib/systemd/system/detects.service```
 
 ### 3) create a file call detect_service.sh with the following content
 
@@ -32,9 +32,10 @@ WantedBy=multi-user.target
 
 ### 4) make it executable and mv it to /usr/bin
 
-``` $ sudo chmod u+x detect_service.sh```
-``` $ sudo mv detect_service.sh /usr/bin```
+$ ```sudo chmod u+x detect_service.sh```
+
+$ ```sudo mv detect_service.sh /usr/bin```
 
 ### 5) enable the service with systemctl
 
-``` $ sudo systemctl enable detects.service```
+$ ```sudo systemctl enable detects.service```
