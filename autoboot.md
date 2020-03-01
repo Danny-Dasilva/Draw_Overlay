@@ -4,6 +4,7 @@
 
 ### 1) create a file call detects.service with the following contents:
 
+```
 [Unit]
 Description=systemd auto face detection service
 After=weston.target
@@ -19,7 +20,7 @@ Restart=always
 
 [Install]
 WantedBy=multi-user.target
-
+```
 
 ### 2) mv the file /lib/systemd/system/detects.service
 
