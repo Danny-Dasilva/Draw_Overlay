@@ -1,0 +1,1 @@
+(obj.scaleX + obj.scaleY) / 2
