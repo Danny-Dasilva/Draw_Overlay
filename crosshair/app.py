@@ -54,6 +54,11 @@ def add_profile():
         write_json(data)
     return "nothing"
 
+@app.route("/enable_hidden", methods=["POST"])
+def enable_hidden():
+    return 'hidden'
+
+
 @app.route("/delete_profile", methods=["POST"])
 def delete_profile():
     print("called", request.method)
