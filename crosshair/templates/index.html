@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    
+<link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -14,27 +18,45 @@
     <div id="one"> <svg width='640' height='480'  preserveAspectRatio='none'>
             <rect id="first" stroke='black' fill='none'
             stroke-dasharray="10 5" />
-            <rect id="second" stroke='deepskyblue' fill='none'
-            stroke-dasharray="10 5" />
 
-            <rect id="third" stroke='orangered' fill='none'
-            stroke-dasharray="10 5" />
 
-            <rect id="fourth" stroke='springgreen' fill='none'
-            stroke-dasharray="10 5" />
+            <rect id="first" stroke='black' fill='none' />
+            <rect id="first_fill" stroke='black' fill='black' />
+            <text id="first_text" fill="white"></text>
 
-            <rect id="fifth" stroke='red' fill='none'
-            stroke-dasharray="10 5" />
+
+            <rect id="second" stroke='deepskyblue' fill='none'/>
+            <rect id="second_fill"  fill='deepskyblue'/>
+            <text id="second_text" fill="white"></text>
+
+            
+            <rect id="third" stroke='orangered' fill='none'/>
+            <rect id="third_fill" fill='orangered' />
+            <text id="third_text" fill="black"></text>
+
+
+
+            <rect id="fourth" stroke='springgreen' fill='none' />
+            <rect id="fourth_fill" fill='springgreen' />
+            <text id="fourth_text" fill="white"></text>
+
+
+
+            <rect id="fifth" stroke='red' fill='none'/>
+            <rect id="fifth_fill" fill='red' />
+            <text id="fifth_text" fill="white"></text>
 
 
             <circle fill='blue' cx="-5" cy="-5" r='5' />
             <circle fill='red' cx="-5" cy="-5" r='5' /> </svg> </div>
 
-    <div id="entries"> Profile name: <input id="name" type="text" name="FirstName" value="Empty"><br> <button
-            onclick="addProfile()">Add Profile</button> <select id="select" onchange="loadCoords()"> </select> <button
+    <div id="entries"> Profile name: <input id="name" type="text" name="FirstName" value="Empty"><br> 
+        <button onclick="saveProfile()">Save Profile</button>
+        Box name: <input id="boxName" oninput="boxName(this.value)"  type="text" name="E" value="Empty">
+         <select id="select" onchange="loadCoords()"> </select> <button
             onclick="deleteProfile()">Delete Profile</button> </div>
 
-
+            Select Box
             <SELECT id="dropdown" name="dropdown" onchange="a = this.options[selectedIndex].value; changeVis(a)">
                 <OPTION selected value="none">None</OPTION>
                 <OPTION selected value="first">1</OPTION>
@@ -48,7 +70,9 @@
             position: absolute;
             z-index: 100;
         }
-     
+        tspan { 
+            font-family: 'Roboto Mono', monospace;
+        }
         #entries {
             padding-top: 480px;
         }
@@ -93,7 +117,7 @@
         })
     }
 
-    function addProfile() {
+    function saveProfile() {
         t = document.getElementById("name").value
         x = rect.getAttribute('x');
         y = rect.getAttribute('y');
@@ -143,44 +167,99 @@
         updateDropdown()
     }
 
-    document.addEventListener('keyup', (e) => {
+
+    function swapLabels (e) {
+
+       
             
 
     
-        switch(e.code) {
-        case "Digit1":
-            changeVis("first")
-            break;
-        case "Digit2":
-            changeVis("second")
-            break;
-        case "Digit3":
-            changeVis("third")
-            break;
-        case "Digit4":
-            changeVis("fourth")
-            break;
-        case "Digit5":
-            changeVis("fifth")
-            break;
-        case "Space":
-            zeroGuides()
-            break;
-        default:
-           
-            // code block
-        } 
+            switch(e.code) {
+            case "Digit1":
+                changeVis("first")
+                break;
+            case "Digit2":
+                changeVis("second")
+                break;
+            case "Digit3":
+                changeVis("third")
+                break;
+            case "Digit4":
+                changeVis("fourth")
+                break;
+            case "Digit5":
+                changeVis("fifth")
+                break;
+            case "Space":
+                removeGuides()
+                break;
+            case "Delete":
+                removeRect();
+                removeGuides();
+                break;
+            default:
+                
+               
+                // code block
+            } 
+    
+        
+    }
+    
 
-    });
 
+    function boxName(value) {
+        var x = rect.getAttribute('x');
+        var y = rect.getAttribute('y');
+        var h = rect.getAttribute('height');
+        
+        var text_rect = document.getElementById(`${rect.id}_fill`)
+        text_rect.setAttribute('x', x);
+        text_rect.setAttribute('y', eval(y) + eval(h));
+       
+        text_rect.setAttribute('width', `${.6 * (value.length +1)}em`);
+        text_rect.setAttribute('height', '1.2em');
+
+        var txt = document.getElementById(`${rect.id}_text`)
+       
+        if (value.length == 0) {
+            text_rect.setAttribute('x', 0);
+            text_rect.setAttribute('y', 0);
+            text_rect.setAttribute('width', 0);
+            text_rect.setAttribute('height', 0);
+            txt.innerHTML = ''
+        } else {
+            
+            txt.innerHTML =`<tspan dy="1em">${value}</tspan>`
+            txt.setAttribute('x', x);
+            txt.setAttribute('y', eval(y) + eval(h));
+        }
+        
+    }
 
   function setDropdown(val) {    
     let element = document.getElementById("dropdown");
     element.value = val;
   }
 
+  function removeRect() {
+    rect.setAttribute('x', 0);
+    rect.setAttribute('y', 0);
+    rect.setAttribute('width', 0);
+    rect.setAttribute('height', 0);
+    var text_rect = document.getElementById(`${rect.id}_fill`)
+    text_rect.setAttribute('x', 0);
+    text_rect.setAttribute('y', 0);
+    text_rect.setAttribute('width', 0);
+    text_rect.setAttribute('height', 0);
+    var txt = document.getElementById(`${rect.id}_text`)
+    txt.innerHTML =``
+    txt.setAttribute('x', 0);
+    txt.setAttribute('y', 0);
 
-  function zeroGuides() {
+
+  }
+  function removeGuides() {
     initial_pt.setAttribute('cx', -5);
     initial_pt.setAttribute('cy', -5);
     current_pt.setAttribute('cx', -5);
@@ -196,8 +275,10 @@
   addListener(canvas);
 
   function changeVis(a) {
-      console.log("called")
       console.log(a, "CHANGE VIUS")
+    if (a == 'none') {
+        removeGuides()
+    }
     rect = document.getElementById(a)
     setDropdown(a)
   }
@@ -217,7 +298,7 @@
   function addListener(canvas) {
     canvas.addEventListener('mousedown', e => {
     window.initial_coords = screenToSVGCoords(canvas, e);
-    console.log(window.initial_coords)
+    
     document.addEventListener('mousemove', mousemoveWithKeys);
     document.addEventListener('mouseup', mouseupWithKeys);
   
@@ -238,7 +319,7 @@
       // let description = describe(`updates the rectangle \`rect\``);
       let current_x = current_coords.x;
       let current_y = current_coords.y;
-      console.log(current_coords)
+     
       if (is_constrained) {
           
           // compute the distance on the X and Y coordiantes...
@@ -294,11 +375,21 @@
       initial_pt.setAttribute('cy', initial_coords.y);
       current_pt.setAttribute('cx', current_coords.x);
       current_pt.setAttribute('cy', current_coords.y);
+      var text_rect = document.getElementById(`${rect.id}_fill`)
+      text_rect.setAttribute('x', x);
+      text_rect.setAttribute('y', eval(y) + eval(height));
+      var txt = document.getElementById(`${rect.id}_text`)
+      txt.setAttribute('x', x);
+      txt.setAttribute('y', eval(y) + eval(height));
+
+
+
       
       // return description;
   }
   
   function mousedownWithKeys(e) {
+    console.log("called")
     var initial_coords = screenToSVGCoords(canvas, e);
     document.addEventListener('mousemove', mousemoveWithKeys);
     document.addEventListener('mouseup', mouseupWithKeys);
@@ -307,6 +398,29 @@
     document.removeEventListener('mousemove', mousemoveWithKeys);
     document.removeEventListener('mouseup', mouseupWithKeys);
   }
+
+
+
+    function formUnselected() {
+        document.addEventListener('keyup',swapLabels,true);
+     
+        document.getElementById("boxName").addEventListener("click", formSelected); 
+        canvas.removeEventListener("click", formUnselected); 
+    }
+    formUnselected()
+  
+  
+    function formSelected() {
+        document.removeEventListener('keyup',swapLabels,true);
+        document.getElementById("boxName").removeEventListener("click", formSelected); 
+        canvas.addEventListener("click", formUnselected); 
+    }
+
+
+
+
+
+
 
 
 
