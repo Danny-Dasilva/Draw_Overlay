@@ -11,32 +11,51 @@
 </head>
 
 <body>
-    <div id="myCanvas"> <svg width='640' height='480'  preserveAspectRatio='none'>
-            <rect stroke='black' fill='none'
+    <div id="one"> <svg width='640' height='480'  preserveAspectRatio='none'>
+            <rect id="first" stroke='black' fill='none'
             stroke-dasharray="10 5" />
-            <circle fill='blue' r='5' />
-            <circle fill='red' r='5' /> </svg> </div>
+            <rect id="second" stroke='deepskyblue' fill='none'
+            stroke-dasharray="10 5" />
+
+            <rect id="third" stroke='orangered' fill='none'
+            stroke-dasharray="10 5" />
+
+            <rect id="fourth" stroke='springgreen' fill='none'
+            stroke-dasharray="10 5" />
+
+            <rect id="fifth" stroke='red' fill='none'
+            stroke-dasharray="10 5" />
+
+
+            <circle fill='blue' cx="-5" cy="-5" r='5' />
+            <circle fill='red' cx="-5" cy="-5" r='5' /> </svg> </div>
+
     <div id="entries"> Profile name: <input id="name" type="text" name="FirstName" value="Empty"><br> <button
             onclick="addProfile()">Add Profile</button> <select id="select" onchange="loadCoords()"> </select> <button
             onclick="deleteProfile()">Delete Profile</button> </div>
 
+
+            <SELECT id="dropdown" name="dropdown" onchange="a = this.options[selectedIndex].value; changeVis(a)">
+                <OPTION selected value="none">None</OPTION>
+                <OPTION selected value="first">1</OPTION>
+                <OPTION value="second">2</OPTION>
+                <OPTION value="third">3</OPTION>
+                <OPTION value="fourth">4</OPTION>
+                <OPTION value="fifth">5</OPTION>
+                </SELECT>
     <style>
-        /* #myCanvas {
+        #one {
             position: absolute;
             z-index: 100;
         }
-
+     
         #entries {
             padding-top: 480px;
-        } */
+        }
     </style>
 </body>
 <script>
     
-
- 
-
- 
 
     function updateDropdown() {
         console.log("uopdate")
@@ -124,21 +143,70 @@
         updateDropdown()
     }
 
+    document.addEventListener('keyup', (e) => {
+            
+
+    
+        switch(e.code) {
+        case "Digit1":
+            changeVis("first")
+            break;
+        case "Digit2":
+            changeVis("second")
+            break;
+        case "Digit3":
+            changeVis("third")
+            break;
+        case "Digit4":
+            changeVis("fourth")
+            break;
+        case "Digit5":
+            changeVis("fifth")
+            break;
+        case "Space":
+            zeroGuides()
+            break;
+        default:
+           
+            // code block
+        } 
+
+    });
 
 
-    var canvas = document.getElementById("myCanvas");
-  
+  function setDropdown(val) {    
+    let element = document.getElementById("dropdown");
+    element.value = val;
+  }
+
+
+  function zeroGuides() {
+    initial_pt.setAttribute('cx', -5);
+    initial_pt.setAttribute('cy', -5);
+    current_pt.setAttribute('cx', -5);
+    current_pt.setAttribute('cy', -5);
+  }
+
+
+  var canvas = document.getElementById("one");
   rect = canvas.querySelector('rect')
   initial_pt = canvas.querySelector('circle[fill=blue]')
   
   current_pt = canvas.querySelector('circle[fill=red]')
-  console.log(initial_pt)
-  console.log(current_pt)
+  addListener(canvas);
+
+  function changeVis(a) {
+      console.log("called")
+      console.log(a, "CHANGE VIUS")
+    rect = document.getElementById(a)
+    setDropdown(a)
+  }
+  
   
   function screenToSVGCoords(canvas, e) {
     // Read the SVG's bounding rectangle...
     let canvasRect = canvas.getBoundingClientRect();
-    console.log(canvasRect)
+
     // ...and transform clientX / clientY to be relative to that rectangle
     return {
       x: e.clientX - canvasRect.x,
@@ -146,13 +214,17 @@
     }
   }
   
-  
-  canvas.addEventListener('mousedown', e => {
+  function addListener(canvas) {
+    canvas.addEventListener('mousedown', e => {
     window.initial_coords = screenToSVGCoords(canvas, e);
+    console.log(window.initial_coords)
     document.addEventListener('mousemove', mousemoveWithKeys);
     document.addEventListener('mouseup', mouseupWithKeys);
   
   });
+
+  }
+  
   
   function mousemoveWithKeys(e) {
     var current_coords = screenToSVGCoords(canvas, e);
@@ -166,7 +238,7 @@
       // let description = describe(`updates the rectangle \`rect\``);
       let current_x = current_coords.x;
       let current_y = current_coords.y;
-      
+      console.log(current_coords)
       if (is_constrained) {
           
           // compute the distance on the X and Y coordiantes...
