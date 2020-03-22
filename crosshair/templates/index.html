@@ -16,8 +16,7 @@
 
 <body>
     <div id="one"> <svg width='640' height='480'  preserveAspectRatio='none'>
-            <rect id="first" stroke='black' fill='none'
-            stroke-dasharray="10 5" />
+            <rect id="first" stroke='black' fill='none'/>
 
 
             <rect id="first" stroke='black' fill='none' />
@@ -50,7 +49,7 @@
             <circle fill='blue' cx="-5" cy="-5" r='5' />
             <circle fill='red' cx="-5" cy="-5" r='5' /> </svg> </div>
 
-    <div id="entries"> Profile name: <input id="name" type="text" name="FirstName" value="Empty"><br> 
+    <div id="entries"> Profile name: <input id="profileName" type="text" name="FirstName" value="Empty"><br> 
         <button onclick="saveProfile()">Save Profile</button>
         Box name: <input id="boxName" oninput="boxName(this.value)"  type="text" name="E" value="Empty">
          <select id="select" onchange="loadCoords()"> </select> <button
@@ -105,10 +104,29 @@
             console.log(values)
             for (const [key, value] of Object.entries(values)) {
                 var rect = document.getElementById(`${key}`)
-                rect.setAttribute('x', value[0]);
-                rect.setAttribute('y', value[1]);
-                rect.setAttribute('width', value[2]);
-                rect.setAttribute('height', value[3]);
+                x = value[0]
+                y = value[1]
+                width = value[2]
+                height = value[3]
+                if (key.includes("_fill")) {
+                    console.log(key, "texzt")
+                } else if (key.includes("_text")) {
+                    rect.innerHTML = value[4]
+                } else {
+                    var w = width / 4
+                    var w_empty = width / 2
+                    var both =  (width /4) + (height /4)
+                    var h = (height /4)
+                    var h_empty = height/2
+                    rect.setAttribute('stroke-dasharray', [w, w_empty, both, h_empty, both, w_empty, both, h_empty, h]);
+                }
+
+                rect.setAttribute('x', x);
+                rect.setAttribute('y', y);
+                rect.setAttribute('width', width);
+                rect.setAttribute('height', height);
+               
+
                 
                 
             }
@@ -118,7 +136,7 @@
     function saveProfile() {
         var rectangles = ['first', 'second', 'third', 'fourth', 'fifth']
         var dict = {}
-
+        removeGuides()
         
         for (var i = 0; i < rectangles.length; i++) {
             id = rectangles[i]
@@ -144,8 +162,9 @@
             y = txt.getAttribute('y');
             width = txt.getAttribute('width');
             height = txt.getAttribute('height');
+            inner_html = txt.innerHTML
 
-            dict[`${id}_text`] = [x, y, width, height]
+            dict[`${id}_text`] = [x, y, width, height, inner_html]
 
 
         }
@@ -421,6 +440,7 @@
         document.addEventListener('keyup',swapLabels,true);
      
         document.getElementById("boxName").addEventListener("click", formSelected); 
+        document.getElementById("profileName").addEventListener("click", formSelected);
         canvas.removeEventListener("click", formUnselected); 
     }
     formUnselected()
@@ -429,6 +449,7 @@
     function formSelected() {
         document.removeEventListener('keyup',swapLabels,true);
         document.getElementById("boxName").removeEventListener("click", formSelected); 
+        document.getElementById("profileName").removeEventListener("click", formSelected); 
         canvas.addEventListener("click", formUnselected); 
     }
 
