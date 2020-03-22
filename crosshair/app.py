@@ -3,7 +3,7 @@ import json
 
 app = Flask(__name__)
 
-
+from wifi import Cell, Scheme
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
@@ -53,6 +53,11 @@ def add_profile():
         data = json_parse(data)
         write_json(data)
     return "nothing"
+
+@app.route("/enable_hidden", methods=["POST"])
+def enable_hidden():
+    return 'hidden'
+
 
 @app.route("/delete_profile", methods=["POST"])
 def delete_profile():
