@@ -3,7 +3,6 @@ import json
 
 app = Flask(__name__)
 
-from wifi import Cell, Scheme
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
