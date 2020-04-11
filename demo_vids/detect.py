@@ -33,10 +33,12 @@ import itertools
 import time
 
 from edgetpu.detection.engine import DetectionEngine
+import os
+dirname, filename = os.path.split(os.path.abspath(__file__))
 
-import svg
-import utils
-from apps import run_app
+from Orange_Vision import svg
+from Orange_Vision import utils
+
 
 CSS_STYLES = str(svg.CssStyle({'.back': svg.Style(fill='black',
                                                   stroke='black',
@@ -73,14 +75,14 @@ def make_get_color(color, labels):
     return lambda obj_id: 'white'
 
 def overlay(title, objs, get_color, inference_time, inference_rate, layout):
-    x0, y0, width, height = layout.window
+    x0, y0, width, height = (0, 80, 640, 480)
     font_size = 0.03 * height
 
     defs = svg.Defs()
     defs += CSS_STYLES
 
     doc = svg.Svg(width=width, height=height,
-                  viewBox='%s %s %s %s' % layout.window,
+                  viewBox='%s %s %s %s' % (0, 80, 640, 480),
                   font_size=font_size, font_family='monospace', font_weight=500)
     doc += defs
 
@@ -90,12 +92,22 @@ def overlay(title, objs, get_color, inference_time, inference_rate, layout):
             caption = '%d%% %s' % (percent, obj.label)
         else:
             caption = '%d%%' % percent
-
-        x, y, w, h = obj.bbox.scale(*layout.size)
+        size = (640, 640)
+        x, y, w, h = obj.bbox.scale(*size)
         color = get_color(obj.id)
 
+
+
+        d_w = w / 4
+        w_empty = w / 2
+        both =  (w /4) + (h /4)
+        d_h = (h /4)
+        h_empty = h/2
+      
+        dash_array = f'{d_w}, {w_empty}, {both}, {h_empty}, {both}, {w_empty}, {both}, {h_empty}, {d_h}'
         doc += svg.Rect(x=x, y=y, width=w, height=h,
-                        style='stroke:%s' % color, _class='bbox')
+                        style='stroke:%s' % color, stroke_dasharray=dash_array, _class='bbox')
+    
         doc += svg.Rect(x=x, y=y+h ,
                         width=size_em(len(caption)), height='1.2em', fill=color)
         t = svg.Text(x=x, y=y+h, fill='black')
@@ -157,6 +169,7 @@ def render_gen(args):
     output = None
     while True:
         tensor, layout, command = (yield output)
+
         inference_rate = next(fps_counter)
         if draw_overlay:
             start = time.monotonic()
@@ -181,6 +194,7 @@ def render_gen(args):
             draw_overlay = not draw_overlay
         elif command == 'n':
             engine = next(engines)
+
 
 def add_render_gen_args(parser):
     parser.add_argument('--model', required=False,
