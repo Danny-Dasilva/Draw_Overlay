@@ -1,0 +1,1 @@
+python3 detect_server.py --source /home/mendel/blue.mp4  --loop

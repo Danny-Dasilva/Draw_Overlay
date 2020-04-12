@@ -198,7 +198,7 @@ def render_gen(args):
 
 def add_render_gen_args(parser):
     parser.add_argument('--model', required=False,
-                        help='.tflite model path', default='/home/mendel/models/mobilenet_v2_edgetpu_red.tflite')
+                        help='.tflite model path', default='/home/mendel/models/blue.tflite')
     parser.add_argument('--labels', required=False,
                         help='label file path', default='/home/mendel/models/field_labels.txt')
     parser.add_argument('--top_k', type=int, default=10,
