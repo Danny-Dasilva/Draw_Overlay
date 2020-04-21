@@ -16,7 +16,7 @@ while(True):
     tx2 = get_bytes('tx')
     rx2 = get_bytes('rx')
 
-    tx_speed = round((tx2 - tx1)/1000000.0, 4)
-    rx_speed = round((rx2 - rx1)/1000000.0, 4)
+    tx_speed = round((tx2 - tx1)/10000.0, 4)
+    rx_speed = round((rx2 - rx1)/10000.0, 4)
 
     print(f"TX: {tx_speed}fMbps  RX: {rx_speed}fMbps")
